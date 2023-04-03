@@ -3041,6 +3041,49 @@
         "examples": []
       },
       {
+        "name": "queryTerrainElevations",
+        "docblock": "Queries the currently loaded data for elevations at an array of geographical locations.\nThe elevations are returned in meters relative to mean sea-level as an array.\nReturns an empty array if terrain is disabled or if terrain data for the locations hasn't been loaded yet.\n\n@param {Array<Array<Number>>} coordinates - an array of coordinates to query elevations at\n@return {Array<Number>}",
+        "modifiers": [
+          "async"
+        ],
+        "params": [
+          {
+            "name": "coordinates",
+            "description": "an array of coordinates to query elevations at",
+            "type": {
+              "name": "Array",
+              "elements": [
+                {
+                  "name": "Position"
+                }
+              ],
+              "raw": "Array<Position>"
+            },
+            "optional": false
+          }
+        ],
+        "returns": {
+          "description": null,
+          "type": {
+            "name": "Promise",
+            "elements": [
+              {
+                "name": "Array",
+                "elements": [
+                  {
+                    "name": "number"
+                  }
+                ],
+                "raw": "Array<number>"
+              }
+            ],
+            "raw": "Promise<Array<number>>"
+          }
+        },
+        "description": "Queries the currently loaded data for elevations at an array of geographical locations.\nThe elevations are returned in meters relative to mean sea-level as an array.\nReturns an empty array if terrain is disabled or if terrain data for the locations hasn't been loaded yet.",
+        "examples": []
+      },
+      {
         "name": "setSourceVisibility",
         "docblock": "Sets the visibility of all the layers referencing the specified `sourceLayerId` and/or `sourceId`\n\n@example\nawait this._map.setSourceVisibility(false, 'composite', 'building')\n\n@param {boolean} visible - Visibility of the layers\n@param {String} sourceId - Identifier of the target source (e.g. 'composite')\n@param {String=} sourceLayerId - Identifier of the target source-layer (e.g. 'building')",
         "modifiers": [],

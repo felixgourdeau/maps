@@ -210,6 +210,15 @@ Queries the currently loaded data for elevation at a geographical location.<br/>
 | ---- | :--: | :------: | :----------: |
 | `coordinate` | `Position` | `Yes` | the coordinates to query elevation at |
 
+### queryTerrainElevations(coordinates)
+
+Queries the currently loaded data for elevations at an array of geographical locations.<br/>The elevations are returned in meters relative to mean sea-level as an array.<br/>Returns an empty array if terrain is disabled or if terrain data for the locations hasn't been loaded yet.
+
+#### arguments
+
+| Name | Type | Required | Description  |
+| ---- | :--: | :------: | :----------: |
+| `coordinates` | `Array<Position>` | `Yes` | an array of coordinates to query elevations at |
 
 ### setSourceVisibility(visible, sourceId[, sourceLayerId])
 

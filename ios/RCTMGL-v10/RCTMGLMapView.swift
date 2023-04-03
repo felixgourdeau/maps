@@ -802,6 +802,27 @@ extension RCTMGLMapView {
   }
 }
 
+extension CLLocationCoordinate2D: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(latitude)
+        hasher.combine(longitude)
+    }
+}
+
+extension RCTMGLMapView {
+  @objc func queryTerrainElevations(coordinates: [CLLocationCoordinate2D], completion: @escaping ([CLLocationDistance]) -> Void) {
+      var elevations: [CLLocationDistance] = []
+
+      for coordinate in coordinates {
+          if let elevation = self.mapboxMap.elevation(at: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)) {
+              elevations.append(elevation)
+          }
+      }
+
+      completion(elevations)
+  }
+}
+
 extension RCTMGLMapView {
   func onMapStyleLoaded(block: @escaping (MapboxMap) -> Void) {
     guard let mapboxMap = mapboxMap else {

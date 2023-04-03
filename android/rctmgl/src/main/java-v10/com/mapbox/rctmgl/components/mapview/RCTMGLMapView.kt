@@ -985,6 +985,31 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
         })
     }
 
+    fun queryTerrainElevations(callbackID: String?, coordinates: ReadableArray) {
+        val elevationResults = mutableListOf<Double?>()
+
+        for (i in 0 until coordinates.size()) {
+            val coordinate = coordinates.getArray(i)
+            val longitude = coordinate.getDouble(0) ?: continue
+            val latitude = coordinate.getDouble(1) ?: continue
+
+            val result = mMap?.getElevation(Point.fromLngLat(longitude, latitude))
+            elevationResults.add(result)
+        }
+
+        sendResponse(callbackID, {
+            val elevationArray = Arguments.createArray()
+            elevationResults.forEach { elevation ->
+                if (elevation != null) {
+                    elevationArray.pushDouble(elevation)
+                } else {
+                    elevationArray.pushNull()
+                }
+            }
+            it.putArray("data", elevationArray)
+        })
+    }
+
     fun match(layer: Layer, sourceId:String, sourceLayerId: String?) : Boolean {
         fun match(actSourceId: String, actSourceLayerId: String?) : Boolean {
             return (actSourceId == sourceId && ((sourceLayerId == null) || (sourceLayerId == actSourceLayerId)))

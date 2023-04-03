@@ -757,6 +757,22 @@ class MapView extends NativeBridgeComponent(
   }
 
   /**
+ * Queries the currently loaded data for elevations at an array of geographical locations.
+ * The elevations are returned in meters relative to mean sea-level as an array.
+ * Returns an empty array if terrain is disabled or if terrain data for the locations hasn't been loaded yet.
+ *
+ * @param {Array<Array<Number>>} coordinates - an array of coordinates to query elevations at
+ * @return {Array<Number>}
+ */
+async queryTerrainElevations(coordinates: Array<Position>): Promise<Array<number>> {
+  const res = await this._runNative<{ data: Array<number> }>(
+    'queryTerrainElevations',
+    [coordinates],
+  );
+  return res.data;
+}
+
+  /**
    * Sets the visibility of all the layers referencing the specified `sourceLayerId` and/or `sourceId`
    *
    * @example

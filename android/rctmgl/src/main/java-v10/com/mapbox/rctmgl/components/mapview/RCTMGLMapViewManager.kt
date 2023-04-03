@@ -271,6 +271,11 @@ open class RCTMGLMapViewManager(context: ReactApplicationContext) :
                     coords.getDouble(1)
                 )
             }
+            METHOD_QUERY_TERRAIN_ELEVATIONS -> {
+                val coordinates = args!!.getArray(1)
+                val callbackId = args!!.getString(0)
+                mapView.queryTerrainElevations(callbackId, coordinates)
+            }
             METHOD_GET_ZOOM -> {
                 mapView.getZoom(args!!.getString(0));
             }
@@ -385,6 +390,7 @@ open class RCTMGLMapViewManager(context: ReactApplicationContext) :
         const val METHOD_SHOW_ATTRIBUTION = 11
         const val METHOD_SET_SOURCE_VISIBILITY = 12
         const val METHOD_QUERY_TERRAIN_ELEVATION = 13
+        const val METHOD_QUERY_TERRAIN_ELEVATIONS = 14
     }
 
     init {

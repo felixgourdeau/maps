@@ -42,6 +42,11 @@ RCT_EXTERN_METHOD(queryTerrainElevation:(nonnull NSNumber*)reactTag
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(queryTerrainElevations:(nonnull NSNumber *)reactTag
+                  coordinates: (id)coordinates
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(setSourceVisibility:(nonnull NSNumber *)reactTag
                   visible:(BOOL)visible
                   sourceId:(nonnull NSString*)sourceId

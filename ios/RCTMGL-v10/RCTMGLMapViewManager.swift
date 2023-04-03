@@ -87,6 +87,29 @@ extension RCTMGLMapViewManager {
         }
       }
     }
+
+    @objc
+    func queryTerrainElevations(_ reactTag: NSNumber,
+                                coordinates: NSArray,
+                                resolver: @escaping RCTPromiseResolveBlock,
+                                rejecter: @escaping RCTPromiseRejectBlock) -> Void {
+        withMapView(reactTag, name: "queryTerrainElevations", rejecter: rejecter) { view in
+            guard let coordinatePairs = coordinates as? [[NSNumber]] else {
+                rejecter("INVALID_COORDINATES", "Invalid coordinates provided", nil)
+                return
+            }
+
+            let convertedCoordinates = coordinatePairs.compactMap { (coordinatePair: [NSNumber]) -> CLLocationCoordinate2D? in
+                guard coordinatePair.count == 2 else { return nil }
+                return CLLocationCoordinate2D(latitude: coordinatePair[1].doubleValue, longitude: coordinatePair[0].doubleValue)
+            }
+
+            view.queryTerrainElevations(coordinates: convertedCoordinates) { results in
+                let numberResults = results.map { NSNumber(value: $0) }
+                resolver(["data": numberResults])
+            }
+        }
+    }
   
   @objc
   func setSourceVisibility(_ reactTag: NSNumber,
