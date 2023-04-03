@@ -254,6 +254,7 @@ open class RCTMGLMapViewManager(context: ReactApplicationContext) :
             .put("showAttribution", METHOD_SHOW_ATTRIBUTION)
             .put("setSourceVisibility", METHOD_SET_SOURCE_VISIBILITY)
             .put("queryTerrainElevation", METHOD_QUERY_TERRAIN_ELEVATION)
+            .put("queryTerrainElevations", METHOD_QUERY_TERRAIN_ELEVATIONS)
             .build()
     }
 
