@@ -287,6 +287,7 @@ class RCTMGLOfflineModule(private val mReactContext: ReactApplicationContext) :
             .minZoom(zoomRange.minZoom)
             .maxZoom(zoomRange.maxZoom)
             .stylePackOptions(stylePackOptions)
+            .pixelRatio(2.0f)
             .build()
         val tilesetDescriptor = offlineManager.createTilesetDescriptor(descriptorOptions)
 
@@ -408,7 +409,7 @@ class RCTMGLOfflineModule(private val mReactContext: ReactApplicationContext) :
             "requiredResourceCount" to region.requiredResourceCount,
             "completedResourceCount" to region.completedResourceCount,
             "completedResourceSize" to region.completedResourceSize,
-            "state" to (if (completed) TileRegionPackState.COMPLETE.rawValue else TileRegionPackState.UNKNOWN ),
+            "state" to (if (completed) TileRegionPackState.COMPLETE.rawValue else TileRegionPackState.UNKNOWN.rawValue ),
             "metadata" to metadataWithName.toString(),
             "bounds" to jsonBounds,
         );
