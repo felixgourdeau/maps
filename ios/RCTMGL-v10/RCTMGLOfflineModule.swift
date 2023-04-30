@@ -189,22 +189,31 @@ class RCTMGLOfflineModule: RCTEventEmitter {
   func getPackStatus(_ name: String,
                      resolver: @escaping RCTPromiseResolveBlock,
                      rejecter: @escaping RCTPromiseRejectBlock) {
-    guard let pack = tileRegionPacks[name] else {
+    guard tileRegionPacks[name] != nil else {
       rejecter("RCTMGLOfflineModule.getPackStatus", "pack \(name) not found", nil)
       return
     }
     
-    tileStore.tileRegionMetadata(forId: name) { result in
+    tileStore.tileRegion(forId: name) { result in
       switch result {
-      case .success(let metadata):
-        var pack = TileRegionPack(
-          name: name,
-          metadata: logged("RCTMGLOfflineModule.getPackStatus") { metadata as? [String:Any] } ?? [:]
-        )
-        self.tileRegionPacks[name] = pack
-        resolver(self._makeRegionStatusPayload(pack: pack))
+      case .success(let region):
+        self.tileStore.tileRegionMetadata(forId: name) { result in
+          switch result {
+          case .success(let metadata):
+            let pack = TileRegionPack(
+              name: name,
+              progress: self.toProgress(region: region),
+              metadata: logged("RCTMGLOfflineModule.getPackStatus") { metadata as? [String:Any] } ?? [:]
+            )
+            self.tileRegionPacks[name] = pack
+            resolver(self._makeRegionStatusPayload(pack: pack))
+          case .failure(let error):
+            Logger.log(level:.error, message: "Unable to fetch metadata for \(name)")
+            rejecter("RCTMGLOfflineModule.getPackStatus", error.localizedDescription, error)
+          }
+        }
       case .failure(let error):
-        Logger.log(level:.error, message: "Unable to fetch metadata for \(name)")
+        Logger.log(level:.error, message: "Unable to fetch region for \(name)")
         rejecter("RCTMGLOfflineModule.getPackStatus", error.localizedDescription, error)
       }
     }
@@ -278,9 +287,9 @@ class RCTMGLOfflineModule: RCTEventEmitter {
       reject("migrateOfflineCache", error.localizedDescription, error)
     }
   }
-  
+
   @objc
-  func resetDatabase(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+  func resetDatabase(_ resolve: @escaping RCTPromiseResolveBlock, rejecter: @escaping RCTPromiseRejectBlock) {
     self.tileStore.allTileRegions { result in
       switch result {
       case .success(let regions):
@@ -299,12 +308,12 @@ class RCTMGLOfflineModule: RCTEventEmitter {
             resolve(nil)
           case .failure(let error):
             Logger.log(level:.error, message: "RCTMGLOfflineModule.resetDatabase/allStylePacks \(error.localizedDescription) \(error)")
-            reject("RCTMGLOfflineModule.resetDatabase/allStylePacks", error.localizedDescription, error)
+            rejecter("RCTMGLOfflineModule.resetDatabase/allStylePacks", error.localizedDescription, error)
           }
         }
       case .failure(let error):
         Logger.log(level:.error, message: "RCTMGLOfflineModule.resetDatabase/allTileRegions \(error.localizedDescription) \(error)")
-        reject("RCTMGLOfflineModule.resetDatabase/allTileRegions", error.localizedDescription, error)
+        rejecter("RCTMGLOfflineModule.resetDatabase/allTileRegions", error.localizedDescription, error)
       }
     }
   }
@@ -488,7 +497,6 @@ class RCTMGLOfflineModule: RCTEventEmitter {
       }
 
       return result
-      
     }
     return [:]
   }
