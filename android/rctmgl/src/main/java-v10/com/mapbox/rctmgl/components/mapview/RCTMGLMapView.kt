@@ -15,15 +15,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import com.facebook.react.bridge.*
-import com.mapbox.android.gestures.MoveGestureDetector
-import com.mapbox.android.gestures.RotateGestureDetector
-import com.mapbox.android.gestures.StandardScaleGestureDetector
+import com.mapbox.android.gestures.*
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
 import com.mapbox.maps.*
 import com.mapbox.maps.extension.localization.localizeLabels
 import com.mapbox.maps.extension.observable.eventdata.MapLoadingErrorEventData
+import com.mapbox.maps.extension.observable.getMapLoadingErrorEventData
 import com.mapbox.maps.extension.style.expressions.generated.Expression
 import com.mapbox.maps.extension.style.layers.Layer
 import com.mapbox.maps.extension.style.layers.generated.*
@@ -66,6 +65,7 @@ import com.mapbox.rctmgl.components.styles.terrain.RCTMGLTerrain
 import com.mapbox.rctmgl.events.AndroidCallbackEvent
 import com.mapbox.rctmgl.events.IEvent
 import com.mapbox.rctmgl.events.MapChangeEvent
+import com.mapbox.rctmgl.events.CameraChangeEvent
 import com.mapbox.rctmgl.events.MapClickEvent
 import com.mapbox.rctmgl.events.constants.EventTypes
 import com.mapbox.rctmgl.utils.*
@@ -82,7 +82,7 @@ data class OrnamentSettings(
 )
 
 enum class MapGestureType {
-    Move,Scale,Rotate
+    Move,Scale,Rotate,Fling,Shove
 }
 
 /***
@@ -185,6 +185,9 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
     private var mLocationComponentManager: LocationComponentManager? = null
     var tintColor: Int? = null
         private set
+
+    private var wasGestureActive = false
+    private var isGestureActive = false
 
     val mapView: MapView
         get() = this.mMapView
@@ -294,6 +297,26 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
         gesturesPlugin.addOnMapLongClickListener(_this)
         gesturesPlugin.addOnMapClickListener(_this)
 
+        gesturesPlugin.addOnFlingListener(object: OnFlingListener {
+            override fun onFling() {
+                mapGesture(MapGestureType.Fling, true)
+            }
+        })
+
+        gesturesPlugin.addOnShoveListener(object: OnShoveListener {
+            override fun onShove(detector: ShoveGestureDetector) {
+                mapGesture(MapGestureType.Shove, detector)
+            }
+
+            override fun onShoveBegin(detector: ShoveGestureDetector) {
+                mapGestureBegin(MapGestureType.Shove, detector)
+            }
+
+            override fun onShoveEnd(detector: ShoveGestureDetector) {
+                mapGestureEnd(MapGestureType.Shove, detector)
+            }
+        })
+
         gesturesPlugin.addOnScaleListener(object: OnScaleListener{
             override fun onScale(detector: StandardScaleGestureDetector) {
                 mapGesture(MapGestureType.Scale, detector)
@@ -332,10 +355,19 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
             }
         })
 
-        map.subscribe({ event -> Logger.e(LOG_TAG, String.format("Map load failed: %s", event.data.toString())) }, Arrays.asList(MapEvents.MAP_LOADING_ERROR))
+        map.subscribe({ event ->
+            Logger.e(LOG_TAG, String.format("Map load failed: %s", event.data.toString()))
+            val errorMessage = event.getMapLoadingErrorEventData().message
+            val event = MapChangeEvent(this, EventTypes.MAP_LOADING_ERROR, writableMapOf(
+                    "error" to errorMessage
+            ))
+            mManager.handleEvent(event)
+
+                      }, Arrays.asList(MapEvents.MAP_LOADING_ERROR))
     }
 
     fun<T> mapGestureBegin(type:MapGestureType, gesture: T) {
+        isGestureActive = true
         mCameraChangeTracker.setReason(CameraChangeReason.USER_GESTURE)
         handleMapChangedEvent(EventTypes.REGION_WILL_CHANGE)
     }
@@ -344,7 +376,9 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
         handleMapChangedEvent(EventTypes.REGION_IS_CHANGING)
         return false
     }
-    fun<T> mapGestureEnd(type: MapGestureType, gesture: T) {}
+    fun<T> mapGestureEnd(type: MapGestureType, gesture: T) {
+        isGestureActive = false
+    }
 
     fun init() {
         // Required for rendering properly in Android Oreo
@@ -533,7 +567,8 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
     fun applyLocalizeLabels() {
         val localeStr = mLocaleString
         if (localeStr != null) {
-            val locale = if (localeStr == "current") Locale.getDefault() else Locale(localeStr)
+            val locale = if (localeStr == "current") Locale.getDefault() else Locale.Builder()
+                .setLanguageTag(localeStr).build()
             savedStyle?.localizeLabels(locale, mLocaleLayerIds)
         }
     }
@@ -744,12 +779,14 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
     }
 
     private fun handleMapChangedEvent(eventType: String) {
+        this.wasGestureActive = isGestureActive
         if (!canHandleEvent(eventType)) return
 
         val event: IEvent
         event = when (eventType) {
             EventTypes.REGION_WILL_CHANGE, EventTypes.REGION_DID_CHANGE, EventTypes.REGION_IS_CHANGING -> MapChangeEvent(this, eventType, makeRegionPayload(null))
-            EventTypes.CAMERA_CHANGED, EventTypes.MAP_IDLE -> MapChangeEvent(this, eventType, makeCameraPayload())
+            EventTypes.CAMERA_CHANGED -> CameraChangeEvent(this, eventType, makeCameraPayload())
+            EventTypes.MAP_IDLE -> MapChangeEvent(this, eventType, makeCameraPayload())
             else -> MapChangeEvent(this, eventType)
         }
         mManager.handleEvent(event)
@@ -783,12 +820,14 @@ open class RCTMGLMapView(private val mContext: Context, var mManager: RCTMGLMapV
             Logger.e(LOG_TAG, "An error occurred while attempting to make the region", ex)
         }
         val gestures = WritableNativeMap()
-        gestures.putBoolean("isGestureActive", mCameraChangeTracker.isUserInteraction)
+        gestures.putBoolean("isGestureActive", wasGestureActive/*mCameraChangeTracker.isUserInteraction*/)
         // gestures.putBoolean("isAnimatingFromGesture", if (null == isAnimated) mCameraChangeTracker.isAnimated else isAnimated)
 
         val state: WritableMap = WritableNativeMap()
         state.putMap("properties", properties)
         state.putMap("gestures", gestures)
+
+        state.putDouble("timestamp", System.currentTimeMillis().toDouble())
 
         return state
     }
