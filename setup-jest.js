@@ -123,6 +123,7 @@ NativeModules.RNMBXLocationModule = {
 NativeModules.RNMBXMapViewModule = {
   takeSnap: jest.fn(),
   queryTerrainElevation: jest.fn(),
+  queryTerrainElevations: jest.fn(),
   setSourceVisibility: jest.fn(),
   getCenter: jest.fn(),
   getCoordinateFromView: jest.fn(),

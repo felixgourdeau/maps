@@ -823,6 +823,14 @@ class MapView extends NativeBridgeComponent(
     return res.data;
   }
 
+    async queryTerrainElevations(coordinates: Position[]): Promise<number[]> {
+    const res = await this._runNative<{ data: number[] }>(
+      'queryTerrainElevations',
+      [coordinates],
+    );
+    return res.data;
+  }
+
   /**
    * Sets the visibility of all the layers referencing the specified `sourceLayerId` and/or `sourceId`
    *

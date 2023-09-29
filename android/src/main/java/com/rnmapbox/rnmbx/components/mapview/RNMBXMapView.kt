@@ -1086,6 +1086,33 @@ open class RNMBXMapView(private val mContext: Context, var mManager: RNMBXMapVie
         }
     }
 
+    fun queryTerrainElevations(coordinates: ReadableArray, response: CommandResponse) {
+        val elevationResults = mutableListOf<Double?>()
+
+        for (i in 0 until coordinates.size()) {
+            val coordinate = coordinates.getArray(i)
+            val longitude = coordinate.getDouble(0) ?: continue
+            val latitude = coordinate.getDouble(1) ?: continue
+
+            val result = mMap?.getElevation(Point.fromLngLat(longitude, latitude))
+            elevationResults.add(result)
+        }
+
+
+        val elevationArray = Arguments.createArray()
+        elevationResults.forEach { elevation ->
+            if (elevation != null) {
+                elevationArray.pushDouble(elevation)
+            } else {
+                elevationArray.pushNull()
+            }
+        }
+        
+        response.success {
+            it.putArray("data", elevationArray)
+        }
+    }
+
     fun clearData(response: CommandResponse) {
         mapView.getMapboxMap().clearData { expected ->
             if (expected.isError()) {
