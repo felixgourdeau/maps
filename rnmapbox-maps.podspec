@@ -20,7 +20,7 @@ require 'json'
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 ## Warning: these lines are scanned by autogenerate.js
-rnMapboxMapsDefaultMapboxVersion = '~> 10.16.0'
+rnMapboxMapsDefaultMapboxVersion = '~> 10.16.1'
 
 rnMapboxMapsDefaultImpl = 'mapbox'
 
@@ -104,6 +104,15 @@ def $RNMapboxMaps._add_spm_to_target(project, target, url, requirement, product_
     ref.package = pkg
     ref.product_name = product_name
     target.package_product_dependencies << ref
+  end
+end
+
+def $RNMapboxMaps._add_compiler_flags(sp, extra_flags)
+  exisiting_flags = sp.attributes_hash["compiler_flags"]
+  if exisiting_flags.present?
+    sp.compiler_flags = exisiting_flags + " #{extra_flags}"
+  else
+    sp.compiler_flags = extra_flags
   end
 end
 
@@ -219,9 +228,12 @@ Pod::Spec.new do |s|
     case $RNMapboxMapsImpl
     when 'mapbox'
       sp.source_files = "ios/RNMBX/**/*.{h,m,mm,swift}"
-
+      sp.private_header_files = 'ios/RNMBX/RNMBXFabricHelpers.h', 'ios/RNMBX/rnmapbox_maps-Swift.pre.h'
       if new_arch_enabled
         install_modules_dependencies(sp)
+      end
+      if ENV['USE_FRAMEWORKS'] || $RNMapboxMapsUseFrameworks
+        $RNMapboxMaps._add_compiler_flags(sp, "-DRNMBX_USE_FRAMEWORKS=1")
       end
     else
       fail "$RNMapboxMapsImpl should be mapbox but was: $RNMapboxMapsImpl"
