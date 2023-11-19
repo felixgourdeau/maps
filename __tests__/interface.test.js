@@ -14,7 +14,10 @@ describe('Public Interface', () => {
       'Callout',
       'Camera',
       'UserLocation',
+      'NativeUserLocation',
       'StyleImport',
+      'Viewport',
+      'CustomLocationProvider',
 
       // modules
       'offlineManager',
@@ -103,6 +106,8 @@ describe('Public Interface', () => {
       // helpers
       'Logger',
       'Style',
+
+      '__experimental',
     ];
     actualKeys.forEach((key) => expect(expectedKeys).toContain(key));
   });

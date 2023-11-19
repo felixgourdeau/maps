@@ -20,7 +20,7 @@ require 'json'
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 ## Warning: these lines are scanned by autogenerate.js
-rnMapboxMapsDefaultMapboxVersion = '~> 10.16.1'
+rnMapboxMapsDefaultMapboxVersion = '~> 10.16.2'
 
 rnMapboxMapsDefaultImpl = 'mapbox'
 
@@ -114,6 +114,14 @@ def $RNMapboxMaps._add_compiler_flags(sp, extra_flags)
   else
     sp.compiler_flags = extra_flags
   end
+end
+
+def $RNMapobxMaps._rn_72_or_earlier()
+  rn_version_full = JSON.parse(File.read("node_modules/react-native/package.json"))['version']
+  rn_major_minor = rn_version_full.split('.')[0...2].map(&:to_i)
+  return (rn_major_minor <=> [0,72]) <= 0
+rescue
+  false
 end
 
 def $RNMapboxMaps.post_install(installer)
@@ -228,9 +236,15 @@ Pod::Spec.new do |s|
     case $RNMapboxMapsImpl
     when 'mapbox'
       sp.source_files = "ios/RNMBX/**/*.{h,m,mm,swift}"
-      sp.private_header_files = 'ios/RNMBX/RNMBXFabricHelpers.h', 'ios/RNMBX/rnmapbox_maps-Swift.pre.h'
+      sp.private_header_files = 'ios/RNMBX/RNMBXFabricHelpers.h', 'ios/RNMBX/RNMBXFabricPropConvert.h', 'ios/RNMBX/rnmapbox_maps-Swift.pre.h'
       if new_arch_enabled
+        sp.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
         install_modules_dependencies(sp)
+        dependencies_only_requiring_modular_headers = ["React-Fabric", "React-graphics", "React-utils", "React-debug", "glog"]
+        sp.dependencies = sp.dependencies.select { |d| !dependencies_only_requiring_modular_headers.include?(d.name) }.map {|d| [d.name, []]}.to_h
+        if $RNMapobxMaps._rn_72_or_earlier()
+          $RNMapboxMaps._add_compiler_flags(sp, "-DRNMBX_RN_72=1")
+        end
       end
       if ENV['USE_FRAMEWORKS'] || $RNMapboxMapsUseFrameworks
         $RNMapboxMaps._add_compiler_flags(sp, "-DRNMBX_USE_FRAMEWORKS=1")

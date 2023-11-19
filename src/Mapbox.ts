@@ -1,10 +1,12 @@
 export * from './RNMBXModule';
+
 export {
   Camera,
   UserTrackingMode,
   type CameraPadding,
   type CameraAnimationMode,
   type CameraBounds,
+  type CameraStop,
 } from './components/Camera';
 export { Atmosphere } from './components/Atmosphere';
 export { default as MapView, type MapState } from './components/MapView';
@@ -17,11 +19,13 @@ export {
   default as UserLocation,
   UserLocationRenderMode,
 } from './components/UserLocation';
+export { default as NativeUserLocation } from './components/NativeUserLocation';
 export { default as VectorSource } from './components/VectorSource';
 export { ShapeSource } from './components/ShapeSource';
 export { default as RasterSource } from './components/RasterSource';
 export { default as RasterDemSource } from './components/RasterDemSource';
 export { default as ImageSource } from './components/ImageSource';
+export { Viewport } from './components/Viewport';
 export { default as Images, type ImageEntry } from './components/Images';
 export { default as Image } from './components/Image';
 export { default as FillLayer } from './components/FillLayer';
@@ -33,6 +37,7 @@ export { default as SkyLayer } from './components/SkyLayer';
 export { SymbolLayer } from './components/SymbolLayer';
 export { default as RasterLayer } from './components/RasterLayer';
 export { default as BackgroundLayer } from './components/BackgroundLayer';
+export { default as CustomLocationProvider } from './components/CustomLocationProvider';
 export { Terrain } from './components/Terrain';
 export {
   default as locationManager,
@@ -78,8 +83,10 @@ export type {
 import { deprecatedClass } from './utils/deprecation';
 import { AnimatedPoint } from './classes';
 import { UserTrackingMode } from './components/Camera';
+import MovePointShapeAnimator from './shape_animators/MovePointShapeAnimator';
 
 /** @deprecated This will be removed in a future release. Use `AnimatedPoint` instead. */
+
 export const AnimatedMapPoint = deprecatedClass(
   AnimatedPoint,
   'AnimatedMapPoint is deprecated please use AnimatedPoint',
@@ -99,3 +106,9 @@ export enum StyleURL {
 
 /** @deprecated UserTrackingModes is deprecated use UserTrackingMode */
 export const UserTrackingModes = UserTrackingMode;
+
+/** @experimental */
+
+export const __experimental = {
+  MovePointShapeAnimator,
+};

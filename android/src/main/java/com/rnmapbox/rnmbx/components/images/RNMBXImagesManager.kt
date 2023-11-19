@@ -6,10 +6,12 @@ import com.facebook.react.bridge.*
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
+import com.facebook.react.viewmanagers.RNMBXImagesManagerInterface
 import com.mapbox.maps.ImageContent
 import com.mapbox.maps.ImageStretches
 import com.rnmapbox.rnmbx.components.AbstractEventEmitter
 import com.rnmapbox.rnmbx.events.constants.EventKeys
+import com.rnmapbox.rnmbx.events.constants.eventMapOf
 import com.rnmapbox.rnmbx.utils.ImageEntry
 import com.rnmapbox.rnmbx.utils.Logger
 import com.rnmapbox.rnmbx.utils.ResourceUtils
@@ -20,7 +22,7 @@ import java.util.*
 class RNMBXImagesManager(private val mContext: ReactApplicationContext) :
     AbstractEventEmitter<RNMBXImages?>(
         mContext
-    ) {
+    ), RNMBXImagesManagerInterface<RNMBXImages> {
     override fun getName(): String {
         return "RNMBXImages"
     }
@@ -67,9 +69,9 @@ class RNMBXImagesManager(private val mContext: ReactApplicationContext) :
     }
 
     @ReactProp(name = "images")
-    fun setImages(images: RNMBXImages, map: ReadableMap) {
+    override fun setImages(images: RNMBXImages, map: Dynamic) {
         val imagesList = mutableListOf<Map.Entry<String, ImageEntry>>()
-        map.forEach { imageName, imageInfo ->
+        map.asMap().forEach { imageName, imageInfo ->
             when (imageInfo) {
                 is ReadableMap -> {
                     val uri = imageInfo.getString("uri")
@@ -128,8 +130,8 @@ class RNMBXImagesManager(private val mContext: ReactApplicationContext) :
     }
 
     @ReactProp(name = "hasOnImageMissing")
-    fun setHasOnImageMissing(images: RNMBXImages, value: Boolean?) {
-        images.setHasOnImageMissing(value!!)
+    override fun setHasOnImageMissing(images: RNMBXImages, value: Dynamic) {
+        images.setHasOnImageMissing(value.asBoolean())
     }
 
     fun toNativeImage(dynamic: Dynamic): NativeImage? {
@@ -165,10 +167,10 @@ class RNMBXImagesManager(private val mContext: ReactApplicationContext) :
     }
 
     @ReactProp(name = "nativeImages")
-    fun setNativeImages(images: RNMBXImages, arr: ReadableArray) {
+    override fun setNativeImages(images: RNMBXImages, arr: Dynamic) {
         val nativeImages = mutableListOf<NativeImage>();
-        for (i in 0 until arr.size()) {
-            val nativeImage = toNativeImage(arr.getDynamic(i))
+        for (i in 0 until arr.asArray().size()) {
+            val nativeImage = toNativeImage(arr.asArray().getDynamic(i))
             if (nativeImage != null) {
                 nativeImages.add(nativeImage)
             }
@@ -177,9 +179,9 @@ class RNMBXImagesManager(private val mContext: ReactApplicationContext) :
     }
 
     override fun customEvents(): Map<String, String>? {
-        return MapBuilder.builder<String, String>()
-            .put(EventKeys.IMAGES_MISSING, "onImageMissing")
-            .build()
+        return eventMapOf(
+            EventKeys.IMAGES_MISSING to "onImageMissing"
+        )
     }
 
     // region RNMBXImage children

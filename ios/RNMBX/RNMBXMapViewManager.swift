@@ -266,5 +266,4 @@ extension RNMBXMapViewManager {
           }
         }
     }
-
 }
