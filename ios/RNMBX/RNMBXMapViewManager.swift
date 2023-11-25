@@ -65,6 +65,26 @@ extension RNMBXMapViewManager {
        }
     }
 
+    @objc public static func queryTerrainElevations(_ view: RNMBXMapView,
+                                                    coordinates: NSArray,
+                                                    resolver: @escaping RCTPromiseResolveBlock,
+                                                    rejecter: @escaping RCTPromiseRejectBlock) -> Void {
+        guard let coordinatePairs = coordinates as? [[NSNumber]] else {
+            rejecter("INVALID_COORDINATES", "Invalid coordinates provided", nil)
+            return
+        }
+
+        let convertedCoordinates = coordinatePairs.compactMap { (coordinatePair: [NSNumber]) -> CLLocationCoordinate2D? in
+            guard coordinatePair.count == 2 else { return nil }
+            return CLLocationCoordinate2D(latitude: coordinatePair[1].doubleValue, longitude: coordinatePair[0].doubleValue)
+        }
+
+        let results = view.queryTerrainElevations(coordinates: convertedCoordinates)
+
+        let numberResults = results.map { NSNumber(value: $0) }
+        resolver(["data": numberResults])
+    }
+
     @objc public static func setSourceVisibility(_ view: RNMBXMapView,
                                       visible: Bool,
                                       sourceId: String,

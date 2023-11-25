@@ -61,6 +61,16 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
         }
     }
 
+    override fun queryTerrainElevations(
+        viewRef: Double?,
+        coordinates: ReadableArray,
+        promise: Promise
+    ) {
+        withMapViewOnUIThread(viewRef, promise) {
+            it.queryTerrainElevations(coordinates, createCommandResponse(promise))
+        }
+    }
+
     override fun setSourceVisibility(
         viewRef: Double?,
         visible: Boolean,

@@ -119,6 +119,12 @@ RCT_EXPORT_METHOD(queryTerrainElevation:(nonnull NSNumber*)viewRef coordinates:(
     } reject:reject methodName:@"queryTerrainElevation"];
 }
 
+RCT_EXPORT_METHOD(queryTerrainElevations:(nonnull NSNumber*)viewRef coordinates:(NSArray *)coordinates resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [self withMapView:viewRef block:^(RNMBXMapView *view) {
+        [RNMBXMapViewManager queryTerrainElevations:view coordinates:coordinates resolver:resolve rejecter:reject];
+    } reject:reject methodName:@"queryTerrainElevations"];
+}
+
 
 RCT_EXPORT_METHOD(setHandledMapChangedEvents:(nonnull NSNumber*)viewRef events:(NSArray *)events resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     [self withMapView:viewRef block:^(RNMBXMapView *view) {

@@ -1032,6 +1032,27 @@ extension RNMBXMapView {
   }
 }
 
+extension CLLocationCoordinate2D: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(latitude)
+        hasher.combine(longitude)
+    }
+}
+
+extension RNMBXMapView {
+  func queryTerrainElevations(coordinates: [CLLocationCoordinate2D]) -> [CLLocationDistance] {
+      var elevations: [CLLocationDistance] = []
+
+      for coordinate in coordinates {
+          if let elevation = self.mapboxMap.elevation(at: CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)) {
+              elevations.append(elevation)
+          }
+      }
+
+      return elevations
+  }
+}
+
 extension RNMBXMapView {
   func onMapStyleLoaded(block: @escaping (MapboxMap) -> Void) {
     guard let mapboxMap = mapboxMap else {

@@ -3487,6 +3487,39 @@
         "examples": []
       },
       {
+        "name": "queryTerrainElevations",
+        "docblock": null,
+        "modifiers": [
+          "async"
+        ],
+        "params": [
+          {
+            "name": "coordinates",
+            "optional": false,
+            "type": {
+              "name": "Array"
+            }
+          }
+        ],
+        "returns": {
+          "type": {
+            "name": "Promise",
+            "elements": [
+              {
+                "name": "Array",
+                "elements": [
+                  {
+                    "name": "number"
+                  }
+                ],
+                "raw": "number[]"
+              }
+            ],
+            "raw": "Promise<number[]>"
+          }
+        }
+      },
+      {
         "name": "setSourceVisibility",
         "docblock": "Sets the visibility of all the layers referencing the specified `sourceLayerId` and/or `sourceId`\n\n@example\nawait this._map.setSourceVisibility(false, 'composite', 'building')\n\n@param {boolean} visible - Visibility of the layers\n@param {String} sourceId - Identifier of the target source (e.g. 'composite')\n@param {String=} sourceLayerId - Identifier of the target source-layer (e.g. 'building')",
         "modifiers": [],
