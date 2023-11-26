@@ -45,6 +45,10 @@ public abstract class NativeMapViewModuleSpec extends ReactContextBaseJavaModule
 
   @ReactMethod
   @DoNotStrip
+  public abstract void queryTerrainElevations(@Nullable Double viewRef, ReadableArray coordinates, Promise promise);
+  
+  @ReactMethod
+  @DoNotStrip
   public abstract void setSourceVisibility(@Nullable Double viewRef, boolean visible, String sourceId, String sourceLayerId, Promise promise);
 
   @ReactMethod
