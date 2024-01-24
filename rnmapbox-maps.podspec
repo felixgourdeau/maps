@@ -1,5 +1,4 @@
 # Customization:
-#  $RNMapboxMapsImpl - one of (maplibre, mapbox, mapbox-gl)
 #  $RNMapboxMapsVersion - version specification ("~> 10.4.3", "~> 5.9.0" or "exactVersion 5.12.1" mapblibre/SPM)
 #  $RNMapboxMapsSwiftPackageManager can be either
 #     "manual" - you're responsible for the Mapbox lib dependency either using cocoapods or SPM
@@ -14,13 +13,14 @@
 #         }
 #         ```
 #  $RNMapboxMapsDownloadToken - *expo only* download token
+#  $RNMapboxMapsCustomPods - use a custom pod for mapbox libs
 
 require 'json'
 
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 ## Warning: these lines are scanned by autogenerate.js
-rnMapboxMapsDefaultMapboxVersion = '~> 10.16.1'
+rnMapboxMapsDefaultMapboxVersion = '~> 10.16.4'
 
 rnMapboxMapsDefaultImpl = 'mapbox'
 
@@ -74,6 +74,15 @@ else
   fail "$RNMapboxMapsImpl should be one of mapbox"
 end
 
+if $RNMapboxMapsUseV11 != nil
+  warn "WARNING: $RNMapboxMapsUseV11 is deprecated just set $RNMapboxMapsVersion to '= 11.0.0"
+end
+
+if $MapboxImplVersion =~ /(~>|>=|=|>)?\S*11\./
+  $RNMapboxMapsUseV11 = true
+end
+
+
 $RNMapboxMaps = Object.new
 
 def $RNMapboxMaps._check_no_mapbox_spm(project)
@@ -116,8 +125,18 @@ def $RNMapboxMaps._add_compiler_flags(sp, extra_flags)
   end
 end
 
+def $RNMapobxMaps._rn_72_or_earlier()
+  rn_version_full = JSON.parse(File.read("node_modules/react-native/package.json"))['version']
+  rn_major_minor = rn_version_full.split('.')[0...2].map(&:to_i)
+  return (rn_major_minor <=> [0,72]) <= 0
+rescue
+  false
+end
+
 def $RNMapboxMaps.post_install(installer)
-  if $RNMapboxMapsUseV11
+  map_pod = installer.pod_targets.find {|p| p.name == "MapboxMaps" }
+  use_v11 = $RNMapboxMapsUseV11 || (map_pod && map_pod.version.split('.')[0].to_i >= 11)
+  if use_v11
     installer.pods_project.build_configurations.each do |config|
       config.build_settings['OTHER_SWIFT_FLAGS'] ||= ['$(inherited)', '-D RNMBX_11']
     end
@@ -211,13 +230,19 @@ Pod::Spec.new do |s|
   s.header_dir = "rnmapbox_maps"
 
   unless $RNMapboxMapsSwiftPackageManager
-    case $RNMapboxMapsImpl
-    when 'mapbox'
-      s.dependency 'MapboxMaps', $MapboxImplVersion
-      s.dependency 'Turf'
-      s.swift_version = '5.0'
+    if $RNMapboxMapsCustomPods
+      $RNMapboxMapsCustomPods.each do |dependecy_spec|
+        s.dependency *dependecy_spec
+      end
     else
-      fail "$RNMapboxMapsImpl should be mapbox but was: $RNMapboxMapsImpl"
+      case $RNMapboxMapsImpl
+      when 'mapbox'
+        s.dependency 'MapboxMaps', $MapboxImplVersion
+        s.dependency 'Turf'
+        s.swift_version = '5.0'
+      else
+        fail "$RNMapboxMapsImpl should be mapbox but was: $RNMapboxMapsImpl"
+      end
     end
   end
 
@@ -228,12 +253,15 @@ Pod::Spec.new do |s|
     case $RNMapboxMapsImpl
     when 'mapbox'
       sp.source_files = "ios/RNMBX/**/*.{h,m,mm,swift}"
-      sp.private_header_files = 'ios/RNMBX/RNMBXFabricHelpers.h', 'ios/RNMBX/rnmapbox_maps-Swift.pre.h'
+      sp.private_header_files = 'ios/RNMBX/RNMBXFabricHelpers.h', 'ios/RNMBX/RNMBXFabricPropConvert.h', 'ios/RNMBX/rnmapbox_maps-Swift.pre.h'
       if new_arch_enabled
         sp.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
         install_modules_dependencies(sp)
-        dependencies_only_requiring_modular_headers = ["React-Fabric", "React-graphics", "React-utils", "React-debug"]
+        dependencies_only_requiring_modular_headers = ["React-Fabric", "React-graphics", "React-utils", "React-debug", "glog"]
         sp.dependencies = sp.dependencies.select { |d| !dependencies_only_requiring_modular_headers.include?(d.name) }.map {|d| [d.name, []]}.to_h
+        if $RNMapobxMaps._rn_72_or_earlier()
+          $RNMapboxMaps._add_compiler_flags(sp, "-DRNMBX_RN_72=1")
+        end
       end
       if ENV['USE_FRAMEWORKS'] || $RNMapboxMapsUseFrameworks
         $RNMapboxMaps._add_compiler_flags(sp, "-DRNMBX_USE_FRAMEWORKS=1")

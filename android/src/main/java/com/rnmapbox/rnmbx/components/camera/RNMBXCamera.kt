@@ -59,7 +59,7 @@ class RNMBXCamera(private val mContext: Context, private val mManager: RNMBXCame
     private val mAnimated = false
     private val mHeading = 0.0
 
-    private var mFollowUserLocation = false
+    private var mFollowUserLocation = defaultFollowUserLocation
     private var mFollowUserMode: String? = null
     private var mFollowZoomLevel : Double? = null
     private var mFollowPitch : Double? = null
@@ -126,8 +126,8 @@ class RNMBXCamera(private val mContext: Context, private val mManager: RNMBXCame
         _updateViewportState()
     }
 
-    fun setFollowUserLocation(value: Boolean) {
-        mFollowUserLocation = value
+    fun setFollowUserLocation(value: Boolean?) {
+        mFollowUserLocation = value ?: defaultFollowUserLocation
         _updateViewportState()
     }
 
@@ -334,10 +334,10 @@ class RNMBXCamera(private val mContext: Context, private val mManager: RNMBXCame
                         if (location?.puckBearingEnabled == true) {
                             when (location.puckBearingSource) {
 
-                                PuckBearingSource.HEADING -> {
+                                PuckBearing.HEADING -> {
                                     UserTrackingMode.FollowWithHeading
                                 }
-                                PuckBearingSource.COURSE -> {
+                                PuckBearing.COURSE -> {
                                     UserTrackingMode.FollowWithCourse
                                 }
                                 else -> {
@@ -468,12 +468,12 @@ class RNMBXCamera(private val mContext: Context, private val mManager: RNMBXCame
             when (mFollowUserMode ?: "normal") {
                 "compass" -> {
                     location.puckBearingEnabled = true
-                    location.puckBearingSource = PuckBearingSource.HEADING
+                    location.puckBearingSource = PuckBearing.HEADING
                     followOptions.bearing(FollowPuckViewportStateBearing.SyncWithLocationPuck)
                 }
                 "course" -> {
                     location.puckBearingEnabled = true
-                    location.puckBearingSource = PuckBearingSource.COURSE
+                    location.puckBearingSource = PuckBearing.COURSE
                     followOptions.bearing(FollowPuckViewportStateBearing.SyncWithLocationPuck)
                 }
                 "normal" -> {
@@ -559,5 +559,7 @@ class RNMBXCamera(private val mContext: Context, private val mManager: RNMBXCame
         const val minimumZoomLevelForUserTracking = 10.5
         const val defaultZoomLevelForUserTracking = 14.0
         const val LOG_TAG = "RNMBXCamera"
+
+        const val defaultFollowUserLocation = false
     }
 }

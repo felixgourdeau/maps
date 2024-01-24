@@ -6,12 +6,9 @@ import com.rnmapbox.rnmbx.components.AbstractMapFeature
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotation
 import com.mapbox.maps.MapboxMap
 import com.rnmapbox.rnmbx.components.mapview.RNMBXMapView
-import com.rnmapbox.rnmbx.components.annotation.RNMBXCallout
 import com.rnmapbox.rnmbx.utils.GeoJSONUtils
 import com.rnmapbox.rnmbx.events.constants.EventTypes
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
-import com.rnmapbox.rnmbx.components.annotation.RNMBXPointAnnotation
 import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
 import com.rnmapbox.rnmbx.events.PointAnnotationClickEvent
 import android.graphics.PointF
@@ -28,7 +25,9 @@ import java.util.*
 import com.rnmapbox.rnmbx.v11compat.annotation.*;
 
 class RNMBXPointAnnotation(private val mContext: Context, private val mManager: RNMBXPointAnnotationManager) : AbstractMapFeature(mContext), View.OnLayoutChangeListener {
-    var marker: PointAnnotation? = null
+
+    var pointAnnotations: RNMBXPointAnnotationCoordinator? = null
+    var annotation: PointAnnotation? = null
         private set
     private var mMap: MapboxMap? = null
     private val mHasChildren = false
@@ -82,6 +81,7 @@ class RNMBXPointAnnotation(private val mContext: Context, private val mManager: 
     override fun addToMap(mapView: RNMBXMapView) {
         super.addToMap(mapView)
         mMap = mapView.getMapboxMap()
+        pointAnnotations = mapView.pointAnnotations
         makeMarker()
         if (mChildView != null) {
             if (!mChildView!!.isAttachedToWindow) {
@@ -99,16 +99,13 @@ class RNMBXPointAnnotation(private val mContext: Context, private val mManager: 
     }
 
     override fun removeFromMap(mapView: RNMBXMapView, reason: RemovalReason): Boolean {
-        val map = (if (mMapView != null) mMapView else mapView) ?: return true
-        if (marker != null) {
-            map.pointAnnotationManager?.delete(marker!!)
-        }
-        if (mChildView != null) {
-            map.offscreenAnnotationViewContainer?.removeView(mChildView)
-        }
-        if (calloutView != null) {
-            map.offscreenAnnotationViewContainer?.removeView(calloutView)
-        }
+        val map = mMapView ?: mapView
+
+        annotation?.let { map.pointAnnotations?.delete(it) }
+
+        mChildView?.let { map.offscreenAnnotationViewContainer?.removeView(it) }
+        calloutView?.let { map.offscreenAnnotationViewContainer?.removeView(it)}
+
         return super.removeFromMap(mapView, reason)
     }
 
@@ -141,37 +138,40 @@ class RNMBXPointAnnotation(private val mContext: Context, private val mManager: 
     val latLng: LatLng?
         get() = mCoordinate?.let { GeoJSONUtils.toLatLng(it) }
     val mapboxID: AnnotationID
-        get() = if (marker == null) INVALID_ANNOTATION_ID else marker!!.id
+        get() = annotation?.id ?: INVALID_ANNOTATION_ID
+
+    val calloutMapboxID: AnnotationID
+        get() = mCalloutSymbol?.id ?: INVALID_ANNOTATION_ID
 
     fun setCoordinate(point: Point) {
         mCoordinate = point
-        if (marker != null) {
-            marker!!.point = point
-            mMapView?.pointAnnotationManager?.update(marker!!)
+        annotation?.let {
+            it.point = point
+            pointAnnotations?.update(it)
         }
-        if (mCalloutSymbol != null) {
-            mCalloutSymbol!!.point = point
-            mMapView?.pointAnnotationManager?.update(mCalloutSymbol!!)
+        mCalloutSymbol?.let {
+            it.point = point
+            pointAnnotations?.update(it)
         }
     }
 
     fun setAnchor(x: Float, y: Float) {
         mAnchor = arrayOf(x, y)
-        if (marker != null) {
+        annotation?.let { annotation ->
             updateAnchor()
-            mMapView?.pointAnnotationManager?.update(marker!!)
+            pointAnnotations?.update(annotation)
         }
     }
 
     fun setDraggable(draggable: Boolean) {
         mDraggable = draggable
-        if (marker != null) {
-            marker!!.isDraggable = draggable
-            mMapView?.pointAnnotationManager?.update(marker!!)
+        annotation?.let { annotation ->
+            annotation.isDraggable = draggable
+            pointAnnotations?.update(annotation)
         }
     }
 
-    fun onSelect(shouldSendEvent: Boolean) {
+    fun doSelect(shouldSendEvent: Boolean) {
         if (calloutView != null) {
             makeCallout()
         }
@@ -180,25 +180,25 @@ class RNMBXPointAnnotation(private val mContext: Context, private val mManager: 
         }
     }
 
-    fun onDeselect() {
+    fun doDeselect() {
         mManager.handleEvent(makeEvent(false))
-        if (mCalloutSymbol != null) {
-            mMapView?.pointAnnotationManager?.delete(mCalloutSymbol!!)
+        mCalloutSymbol?.let { mCalloutSymbol ->
+            pointAnnotations?.delete(mCalloutSymbol)
         }
     }
 
     fun onDragStart() {
-        mCoordinate = marker!!.point
+        mCoordinate = annotation!!.point
         mManager.handleEvent(makeDragEvent(EventTypes.ANNOTATION_DRAG_START))
     }
 
     fun onDrag() {
-        mCoordinate = marker!!.point
+        mCoordinate = annotation!!.point
         mManager.handleEvent(makeDragEvent(EventTypes.ANNOTATION_DRAG))
     }
 
     fun onDragEnd() {
-        mCoordinate = marker!!.point
+        mCoordinate = annotation!!.point
         mManager.handleEvent(makeDragEvent(EventTypes.ANNOTATION_DRAG_END))
     }
 
@@ -210,41 +210,41 @@ class RNMBXPointAnnotation(private val mContext: Context, private val mManager: 
                 .withIconSize(1.0)
                 .withSymbolSortKey(10.0)
         }
-        val symbolManager = mMapView?.pointAnnotationManager
-        if (symbolManager != null && options != null) {
-            marker = symbolManager.create(options)
+        annotation = null
+        options?.let {
+            annotation = pointAnnotations?.create(it)
             updateOptions()
         }
     }
 
     private fun updateOptions() {
-        if (marker != null) {
+        annotation?.let {
             updateIconImage()
             updateAnchor()
-            mMapView?.pointAnnotationManager?.update(marker!!)
+            pointAnnotations?.update(it)
         }
     }
 
     private fun updateIconImage() {
         if (mChildView != null) {
             if (mChildBitmapId != null) {
-                marker?.iconImage = mChildBitmapId
+                annotation?.iconImage = mChildBitmapId
             }
         } else {
-            marker?.iconImage = MARKER_IMAGE_ID
-            marker?.iconAnchor = IconAnchor.BOTTOM
+            annotation?.iconImage = MARKER_IMAGE_ID
+            annotation?.iconAnchor = IconAnchor.BOTTOM
         }
     }
 
     private fun updateAnchor() {
-        if (mAnchor != null && mChildView != null && mChildBitmap != null && marker != null) {
+        if (mAnchor != null && mChildView != null && mChildBitmap != null && annotation != null) {
             var w = mChildBitmap!!.width
             var h = mChildBitmap!!.height
             val scale = resources.displayMetrics.density
             w = (w / scale).toInt()
             h = (h / scale).toInt()
-            marker?.iconAnchor = IconAnchor.TOP_LEFT
-            marker?.iconOffset = Arrays.asList(w.toDouble() * mAnchor!![0] * -1.0, h.toDouble() * mAnchor!![1] * -1.0)
+            annotation?.iconAnchor = IconAnchor.TOP_LEFT
+            annotation?.iconOffset = Arrays.asList(w.toDouble() * mAnchor!![0] * -1.0, h.toDouble() * mAnchor!![1] * -1.0)
         }
     }
 
@@ -270,7 +270,7 @@ class RNMBXPointAnnotation(private val mContext: Context, private val mManager: 
                     .withDraggable(false)
             }
         }
-        val symbolManager = mMapView?.pointAnnotationManager
+        val symbolManager = pointAnnotations
         if (symbolManager != null && options != null) {
             mCalloutSymbol = symbolManager.create(options)
         }

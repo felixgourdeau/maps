@@ -5,6 +5,9 @@ import * as url from 'url';
 
 import dir from 'node-dir';
 import { parse, utils } from 'react-docgen';
+
+import { pascelCase } from './globals.mjs';
+
 const { parseJsDoc } = utils;
 
 import JSDocNodeTree from './JSDocNodeTree.js';
@@ -25,7 +28,7 @@ const IGNORE_PATTERN = /\.web\./;
 
 const IGNORE_METHODS = ['setNativeProps'];
 
-const fileExtensionsRegex = /.(js|tsx|(?<!d.)ts)$/;
+const fileExtensionsRegex = /\.(js|tsx|(?<!d.)ts)$/;
 
 class DocJSONBuilder {
   constructor(styledLayers) {
@@ -55,10 +58,16 @@ class DocJSONBuilder {
   }
 
   postprocess(component, name) {
-    // Remove all private methods and parse examples from docblock
+    // Remove all private methods, and properties and parse examples from docblock
 
     if (!Array.isArray(component.methods)) {
       return;
+    }
+
+    for (const [propName, prop] of Object.entries(component.props)) {
+      if (prop.description.includes('@private')) {
+        delete component.props[propName];
+      }
     }
 
     component.name = name;
@@ -237,6 +246,19 @@ class DocJSONBuilder {
       }
     }
 
+    /**
+     * @param {string} jsdoc comment
+     * @returns string
+     */
+    function formatMethodJSDocToMD(description) {
+      let result = description
+        .replaceAll('@deprecated', '**DEPRECATED**')
+        .replaceAll(/@param\s+\{(.+)\}\s+(\S+)/g, (m, type, name) => {
+          return `- \`${name}\`: \`${type}\` `;
+        });
+      return result;
+    }
+
     function mapProp(propMeta, propName, array) {
       let result = {};
       if (!array) {
@@ -257,7 +279,8 @@ class DocJSONBuilder {
           result.type.name === 'func' &&
           result.type.funcSignature
         ) {
-          result.description = `${result.description}\n*signature:*\`${result.type.funcSignature}\``;
+          let description = formatMethodJSDocToMD(result.description);
+          result.description = `${description}\n*signature:*\`${result.type.funcSignature}\``;
         }
       } else {
         if (propName) {

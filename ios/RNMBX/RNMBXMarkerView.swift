@@ -22,7 +22,6 @@ class RNMBXMarkerViewParentViewAnnotation : UIView {
     if actSize.width != size.width || actSize.height != size.height {
       let dx = ((size.width/2.0) - newOffset.dx) - ((actSize.width/2.0) - oldOffset.dx)
       let dy = ((size.height/2.0) + newOffset.dy) - ((actSize.height/2.0) + oldOffset.dy)
-      print(" => size=\(size) actSize=\(actSize) newOffset=\(newOffset) oldOffset=\(oldOffset)  dx=\(dx) dy=\(dy)")
       var frame = self.frame
       frame = frame.offsetBy(dx: -dx, dy: -dy)
       frame.size = size
@@ -43,7 +42,7 @@ public class RNMBXMarkerView: UIView, RNMBXMapComponent {
   
   var didAddToMap = false
   
-  @objc public var coordinate: String? {
+  @objc public var coordinate: Array<NSNumber>? {
     didSet {
       update()
     }
@@ -61,6 +60,12 @@ public class RNMBXMarkerView: UIView, RNMBXMapComponent {
     }
   }
   
+  @objc public var allowOverlapWithPuck: Bool = false {
+    didSet {
+      update()
+    }
+  }
+  
   @objc public var isSelected: Bool = false {
     didSet {
       update()
@@ -70,46 +75,33 @@ public class RNMBXMarkerView: UIView, RNMBXMapComponent {
   // MARK: - Derived variables
   
   var annotationManager: ViewAnnotationManager? {
-    self.map?.viewAnnotations
+    self.map?.mapView?.viewAnnotations
   }
 
   var point: Point? {
-    guard let _coordinate = coordinate else {
-      Logger.log(level: .error, message: "[getPoint] No coordinates were set")
-      return nil
+    guard let _lat = coordinate?[1] else {
+        Logger.log(level: .error, message: "[getPoint] No latitude were set")
+        return nil
     }
+    guard let _lon = coordinate?[0] else {
+        Logger.log(level: .error, message: "[getPoint] No Longitude were set")
+        return nil
+    }
+    
+    let coord = CLLocationCoordinate2D(
+        latitude: Double(_lat) as CLLocationDegrees, longitude: Double(_lon) as CLLocationDegrees);
      
-    guard let _data = _coordinate.data(using: .utf8) else {
-      Logger.log(level: .error, message: "[getPoint] Cannot serialize coordinate")
-      return nil
-    }
-     
-    guard let _feature = try? JSONDecoder().decode(Feature.self, from: _data) else {
-      Logger.log(level: .error, message: "[getPoint] Cannot parse serialized coordinate")
-      return nil
-    }
-     
-    guard let _geometry = _feature.geometry else {
-      Logger.log(level: .error, message: "[getPoint] Invalid geometry")
-      return nil
-    }
-
-    guard case .point(let _point) = _geometry else {
-      Logger.log(level: .error, message: "[getPoint] Invalid point")
-      return nil
-    }
-
-    return _point
+    return Point(coord)
   }
 
   // MARK: - RNMBXMapComponent methods
 
-  func addToMap(_ map: RNMBXMapView, style: Style) {
+  public func addToMap(_ map: RNMBXMapView, style: Style) {
     self.map = map
     add()
   }
 
-  func removeFromMap(_ map: RNMBXMapView, reason: RemovalReason) -> Bool {
+  public func removeFromMap(_ map: RNMBXMapView, reason: RemovalReason) -> Bool {
     remove()
     return true
   }
@@ -157,10 +149,8 @@ public class RNMBXMarkerView: UIView, RNMBXMapComponent {
   @objc public func updateAnnotationViewSize(_ next: CGRect, _ prev: CGRect) {
     annotationView.updateSize(next.size, oldOffset:calcOffset(size: prev.size), newOffset: calcOffset(size: next.size))
   }
-  
-    
-  
-  func waitForStyleLoad() -> Bool {
+
+  public func waitForStyleLoad() -> Bool {
     true
   }
 
@@ -228,7 +218,7 @@ public class RNMBXMarkerView: UIView, RNMBXMapComponent {
     let size = self.bounds.size
     let offset = calcOffset(size: size)
   
-    let options = ViewAnnotationOptions(
+    var options = ViewAnnotationOptions(
       geometry: geometry,
       width: size.width,
       height: size.height,
@@ -237,6 +227,9 @@ public class RNMBXMarkerView: UIView, RNMBXMapComponent {
       offsetY: offset.dy,
       selected: isSelected
     )
+    #if RNMBX_11
+    options.allowOverlapWithPuck = allowOverlapWithPuck
+    #endif
     return options
   }
   

@@ -52,6 +52,8 @@ export interface NativeProps extends ViewProps {
   rotateEnabled?: OptionalProp<boolean>;
   pitchEnabled?: OptionalProp<boolean>;
 
+  deselectAnnotationOnTap?: OptionalProp<boolean>;
+
   requestDisallowInterceptTouchEvent?: OptionalProp<boolean>;
 
   projection?: OptionalProp<'mercator' | 'globe'>;
@@ -74,6 +76,8 @@ export interface NativeProps extends ViewProps {
   onLongPress?: DirectEventHandler<OnPressEventType>;
   onMapChange?: DirectEventHandler<OnMapChangeEventType>;
   onCameraChanged?: DirectEventHandler<OnCameraChangedEventType>;
+
+  mapViewImpl?: OptionalProp<string>;
 }
 
 export default codegenNativeComponent<NativeProps>(

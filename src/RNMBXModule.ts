@@ -31,12 +31,25 @@ interface RNMBXModule {
   addCustomHeader(headerName: string, headerValue: string): void;
   setAccessToken(accessToken: string | null): Promise<string | null>;
   setWellKnownTileServer(tileServer: string): void;
+  clearData(): Promise<void>;
   getAccessToken(): Promise<string>;
   setTelemetryEnabled(telemetryEnabled: boolean): void;
   setConnected(connected: boolean): void;
 }
 
 const RNMBXModule: RNMBXModule = { ...NativeModules.RNMBXModule };
+if (NativeModules.RNMBXModule == null) {
+  if ((global as { expo?: unknown }).expo != null) {
+    // global.expo.modules.ExponentConstants;
+    throw new Error(
+      '@rnmapbox/maps native code not available. Make sure you have linked the library and rebuild your app. See https://rnmapbox.github.io/docs/install?rebuild=expo#rebuild',
+    );
+  } else {
+    throw new Error(
+      '@rnmapbox/maps native code not available. Make sure you have linked the library and rebuild your app. See https://rnmapbox.github.io/docs/install',
+    );
+  }
+}
 
 export const {
   StyleURL,
@@ -48,6 +61,7 @@ export const {
   addCustomHeader,
   setAccessToken,
   setWellKnownTileServer,
+  clearData,
   getAccessToken,
   setTelemetryEnabled,
   setConnected,

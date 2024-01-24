@@ -28,6 +28,7 @@ public interface RNMBXMapViewManagerInterface<T extends View> {
   void setScrollEnabled(T view, Dynamic value);
   void setRotateEnabled(T view, Dynamic value);
   void setPitchEnabled(T view, Dynamic value);
+  void setDeselectAnnotationOnTap(T view, Dynamic value);
   void setRequestDisallowInterceptTouchEvent(T view, Dynamic value);
   void setProjection(T view, Dynamic value);
   void setLocalizeLabels(T view, Dynamic value);
@@ -38,4 +39,5 @@ public interface RNMBXMapViewManagerInterface<T extends View> {
   void setAttributionViewMargins(T view, Dynamic value);
   void setAttributionViewPosition(T view, Dynamic value);
   void setCompassImage(T view, Dynamic value);
+  void setMapViewImpl(T view, Dynamic value);
 }

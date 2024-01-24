@@ -153,8 +153,10 @@
         "expression": {
           "interpolated": true,
           "parameters": [
-            "zoom"
-          ]
+            "zoom",
+            "measure-light"
+          ],
+          "relaxZoomRestriction": true
         },
         "transition": true,
         "mbx": {
@@ -175,8 +177,10 @@
         "expression": {
           "interpolated": true,
           "parameters": [
-            "zoom"
-          ]
+            "zoom",
+            "measure-light"
+          ],
+          "relaxZoomRestriction": true
         },
         "transition": true,
         "mbx": {
@@ -197,8 +201,10 @@
         "expression": {
           "interpolated": true,
           "parameters": [
-            "zoom"
-          ]
+            "zoom",
+            "measure-light"
+          ],
+          "relaxZoomRestriction": true
         },
         "transition": true,
         "mbx": {
@@ -231,8 +237,10 @@
         "expression": {
           "interpolated": true,
           "parameters": [
-            "zoom"
-          ]
+            "zoom",
+            "measure-light"
+          ],
+          "relaxZoomRestriction": true
         },
         "transition": true,
         "mbx": {
@@ -267,8 +275,10 @@
         "expression": {
           "interpolated": true,
           "parameters": [
-            "zoom"
-          ]
+            "zoom",
+            "measure-light"
+          ],
+          "relaxZoomRestriction": true
         },
         "transition": true,
         "mbx": {
@@ -303,8 +313,10 @@
         "expression": {
           "interpolated": true,
           "parameters": [
-            "zoom"
-          ]
+            "zoom",
+            "measure-light"
+          ],
+          "relaxZoomRestriction": true
         },
         "transition": true,
         "mbx": {
@@ -423,6 +435,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-background-visibility",
           "name": "visibility",
@@ -623,7 +638,7 @@
       {
         "name": "centerCoordinate",
         "required": false,
-        "type": "number[] \\| [number, number]",
+        "type": "Position",
         "default": "none",
         "description": "The location on which the map should center."
       },
@@ -773,14 +788,14 @@
             {
               "name": "ne",
               "required": true,
-              "type": "union",
+              "type": "Position",
               "default": "none",
               "description": "FIX ME NO DESCRIPTION"
             },
             {
               "name": "sw",
               "required": true,
-              "type": "union",
+              "type": "Position",
               "default": "none",
               "description": "FIX ME NO DESCRIPTION"
             }
@@ -804,8 +819,8 @@
             },
             {
               "name": "centerCoordinate",
-              "required": true,
-              "type": "union",
+              "required": false,
+              "type": "Position",
               "default": "none",
               "description": "The location on which the map should center."
             },
@@ -885,7 +900,7 @@
           "funcSignature": "(event:MapboxGLEvent) => void"
         },
         "default": "none",
-        "description": "Executes when user tracking mode changes.\n*signature:*`(event:MapboxGLEvent) => void`"
+        "description": "Executes when user tracking mode changes.\n**DEPRECATED** use Viewport#onStatusChanged instead.\n*signature:*`(event:MapboxGLEvent) => void`"
       }
     ],
     "fileNameWithExt": "Camera.tsx",
@@ -915,7 +930,7 @@
         "name": "sourceID",
         "required": false,
         "type": "string",
-        "default": "MapboxGL.StyleSource.DefaultSourceID",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
         "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined.\nInferred from parent source only if the layer is a direct child to it."
       },
       {
@@ -923,7 +938,7 @@
         "required": false,
         "type": "string",
         "default": "none",
-        "description": "Identifier of the layer within the source identified by the sourceID property\nfrom which the receiver obtains the data to style."
+        "description": "Identifier of the layer within the source identified by the sourceID property from which the receiver obtains the data to style."
       },
       {
         "name": "aboveLayerID",
@@ -966,6 +981,13 @@
         "type": "number",
         "default": "none",
         "description": "The maximum zoom level at which the layer gets parsed and appears."
+      },
+      {
+        "name": "slot",
+        "required": false,
+        "type": "'bottom' \\| 'middle' \\| 'top'",
+        "default": "none",
+        "description": "The slot this layer is assigned to. If specified, and a slot with that name exists, it will be placed at that position in the layer order.\n\nv11 only"
       },
       {
         "name": "style",
@@ -1021,6 +1043,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-circle-visibility",
           "name": "visibility",
@@ -1043,7 +1068,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1067,7 +1093,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1091,7 +1118,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1117,7 +1145,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1261,7 +1290,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1285,7 +1315,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1311,7 +1342,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1322,6 +1354,30 @@
         }
       }
     ]
+  },
+  "CustomLocationProvider": {
+    "description": "",
+    "displayName": "CustomLocationProvider",
+    "methods": [],
+    "props": [
+      {
+        "name": "coordinate",
+        "required": false,
+        "type": "Position",
+        "default": "none",
+        "description": "longitude and latitude to use for the custom location provider that gets applied to the NativeUserLocation"
+      },
+      {
+        "name": "heading",
+        "required": false,
+        "type": "number",
+        "default": "none",
+        "description": "heading/bearing to use for custom location provider that gets applied to the NativeUserLocation"
+      }
+    ],
+    "fileNameWithExt": "CustomLocationProvider.tsx",
+    "relPath": "src/components/CustomLocationProvider.tsx",
+    "name": "CustomLocationProvider"
   },
   "FillExtrusionLayer": {
     "description": "FillExtrusionLayer is a style layer that renders one or more 3D extruded polygons on the map.",
@@ -1431,6 +1487,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-fill-extrusion-visibility",
           "name": "visibility",
@@ -1477,7 +1536,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1642,6 +1702,30 @@
           "name": "fill-extrusion-vertical-gradient",
           "namespace": "paint"
         }
+      },
+      {
+        "name": "fillExtrusionRoundedRoof",
+        "type": "boolean",
+        "values": [],
+        "default": true,
+        "description": "Indicates whether top edges should be rounded when fillExtrusionEdgeRadius has a value greater than 0. If false, rounded edges are only applied to the sides. Default is true.",
+        "requires": [
+          "fillExtrusionEdgeRadius"
+        ],
+        "disabledBy": [],
+        "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false,
+          "parameters": [
+            "zoom"
+          ]
+        },
+        "transition": false,
+        "mbx": {
+          "fullName": "paint-fill-extrusion-fill-extrusion-rounded-roof",
+          "name": "fill-extrusion-rounded-roof",
+          "namespace": "paint"
+        }
       }
     ]
   },
@@ -1668,7 +1752,7 @@
         "name": "sourceID",
         "required": false,
         "type": "string",
-        "default": "MapboxGL.StyleSource.DefaultSourceID",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
         "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined.\nInferred from parent source only if the layer is a direct child to it."
       },
       {
@@ -1719,6 +1803,13 @@
         "type": "number",
         "default": "none",
         "description": "The maximum zoom level at which the layer gets parsed and appears."
+      },
+      {
+        "name": "slot",
+        "required": false,
+        "type": "'bottom' \\| 'middle' \\| 'top'",
+        "default": "none",
+        "description": "The slot this layer is assigned to. If specified, and a slot with that name exists, it will be placed at that position in the layer order.\n\nv11 only"
       },
       {
         "name": "style",
@@ -1774,6 +1865,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-fill-visibility",
           "name": "visibility",
@@ -1817,7 +1911,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1843,7 +1938,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1868,7 +1964,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -1987,7 +2084,7 @@
         "required": true,
         "type": "string",
         "default": "none",
-        "description": "A string that uniquely identifies the layer in the style to which it is added."
+        "description": "A string that uniquely identifies the source in the style to which it is added."
       },
       {
         "name": "existing",
@@ -2000,7 +2097,7 @@
         "name": "sourceID",
         "required": false,
         "type": "string",
-        "default": "MapboxGL.StyleSource.DefaultSourceID",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
         "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined.\nInferred from parent source only if the layer is a direct child to it."
       },
       {
@@ -2008,7 +2105,7 @@
         "required": false,
         "type": "string",
         "default": "none",
-        "description": "Identifier of the layer within the source identified by the sourceID property\nfrom which the receiver obtains the data to style."
+        "description": "Identifier of the layer within the source identified by the sourceID property from which the receiver obtains the data to style."
       },
       {
         "name": "aboveLayerID",
@@ -2053,6 +2150,13 @@
         "description": "The maximum zoom level at which the layer gets parsed and appears."
       },
       {
+        "name": "slot",
+        "required": false,
+        "type": "'bottom' \\| 'middle' \\| 'top'",
+        "default": "none",
+        "description": "The slot this layer is assigned to. If specified, and a slot with that name exists, it will be placed at that position in the layer order.\n\nv11 only"
+      },
+      {
         "name": "style",
         "required": false,
         "type": "HeatmapLayerStyleProps",
@@ -2085,6 +2189,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-heatmap-visibility",
           "name": "visibility",
@@ -2107,7 +2214,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -2132,7 +2240,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": false,
@@ -2190,7 +2299,7 @@
           1,
           "red"
         ],
-        "description": "Defines the color of each pixel based on its density value in a heatmap.  Should be an expression that uses `[\"heatmapDensity\"]` as input.",
+        "description": "Defines the color of each pixel based on its density value in a heatmap. Should be an expression that uses `[\"heatmapDensity\"]` as input.",
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
@@ -2368,7 +2477,7 @@
           ]
         },
         "default": "none",
-        "description": "Specifies the external images in key-value pairs required for the shape source.\nKeys are names - see iconImage expressions, values can be either urls-s objects\nwith format {uri: 'http://...'}` or `require('image.png')` or `import 'image.png'`"
+        "description": "Specifies the external images in key-value pairs required for the shape source.\nKeys are names - see iconImage expressions, values can be either urls-s objects\nwith format `{uri: 'http://...'}` or `require('image.png')` or `import 'image.png'`"
       },
       {
         "name": "nativeAssetImages",
@@ -2546,7 +2655,7 @@
         "name": "sourceID",
         "required": false,
         "type": "string",
-        "default": "MapboxGL.StyleSource.DefaultSourceID",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
         "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined.\nInferred from parent source only if the layer is a direct child to it."
       },
       {
@@ -2597,6 +2706,13 @@
         "type": "number",
         "default": "none",
         "description": "The maximum zoom level at which the layer gets parsed and appears."
+      },
+      {
+        "name": "slot",
+        "required": false,
+        "type": "'bottom' \\| 'middle' \\| 'top'",
+        "default": "none",
+        "description": "The slot this layer is assigned to. If specified, and a slot with that name exists, it will be placed at that position in the layer order.\n\nv11 only"
       },
       {
         "name": "style",
@@ -2766,6 +2882,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-line-visibility",
           "name": "visibility",
@@ -2788,7 +2907,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -2814,7 +2934,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -2900,7 +3021,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -2926,7 +3048,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -2951,7 +3074,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -2977,7 +3101,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -3039,7 +3164,7 @@
         "name": "lineGradient",
         "type": "color",
         "values": [],
-        "description": "Defines a gradient with which to color a line feature. Can only be used with GeoJSON sources that specify `\"lineMetrics\": true`.",
+        "description": "A gradient used to color a line feature at various distances along its length. Defined using a `step` or `interpolate` expression which outputs a color for each corresponding `lineProgress` input value. `lineProgress` is a percentage of the line feature's total length as measured on the webmercator projected coordinate plane (a `number` between `0` and `1`). Can only be used with GeoJSON sources that specify `\"lineMetrics\": true`.",
         "requires": [],
         "disabledBy": [
           "linePattern"
@@ -3086,6 +3211,86 @@
         }
       }
     ]
+  },
+  "LocationPuck": {
+    "description": "Renders a puck on the map that shows the device's current location.",
+    "displayName": "LocationPuck",
+    "methods": [],
+    "props": [
+      {
+        "name": "androidRenderMode",
+        "required": false,
+        "type": "'normal' \\| 'compass' \\| 'gps'",
+        "default": "none",
+        "description": "Android render mode.\n\n - normal: just a circle\n - compass: triangle with heading\n - gps: large arrow\n\n@deprecated use `puckBearing` for source and `bearingImage` for image\n@platform android"
+      },
+      {
+        "name": "puckBearing",
+        "required": false,
+        "type": "'heading' \\| 'course'",
+        "default": "none",
+        "description": "The bearing of the puck.\n\n - heading: Orients the puck to match the direction in which the device is facing.\n - course: Orients the puck to match the direction in which the device is moving."
+      },
+      {
+        "name": "puckBearingEnabled",
+        "required": false,
+        "type": "boolean",
+        "default": "none",
+        "description": "Whether the puck rotates to track the bearing source."
+      },
+      {
+        "name": "iosShowsUserHeadingIndicator",
+        "required": false,
+        "type": "boolean",
+        "default": "none",
+        "description": "iOS only. A Boolean value indicating whether the user location annotation may display a permanent heading indicator.\n\n@platform ios\n@deprecated use `puckBearingEnabled={true} puckBrearing=\"heading\"` instead"
+      },
+      {
+        "name": "topImage",
+        "required": false,
+        "type": "string",
+        "default": "none",
+        "description": "The name of image to use as the top layer for the location indicator. Images component should define this image."
+      },
+      {
+        "name": "bearingImage",
+        "required": false,
+        "type": "string",
+        "default": "none",
+        "description": "The name of image to use as the middle layer for the location indicator. Images component should define this image."
+      },
+      {
+        "name": "shadowImage",
+        "required": false,
+        "type": "string",
+        "default": "none",
+        "description": "The name of image to use as the background for the location indicator. Images component should define this image."
+      },
+      {
+        "name": "scale",
+        "required": false,
+        "type": "T \\| Expression",
+        "default": "none",
+        "description": "The size of the images, as a scale factor applied to the size of the specified image. Supports expressions based on zoom.\n\n@example\n[\"interpolate\",[\"linear\"], [\"zoom\"], 10.0, 1.0, 20.0, 4.0]]\n@example\n2.0"
+      },
+      {
+        "name": "pulsing",
+        "required": false,
+        "type": "\\| {\n    /**\n     * Flag determining whether the pulsing circle animation.\n     */\n    isEnabled?: boolean;\n\n    /**\n     * The color of the pulsing circle.\n     */\n    color?: number \\| ColorValue;\n\n    /**\n     * Circle radius configuration for the pulsing circle animation.\n     *  - accuracy:  Pulsing circle animates with the `horizontalAccuracy` form the latest puck location.\n     *  - number: Pulsing circle should animate with the constant radius.\n     */\n    radius?: 'accuracy' \\| number;\n  }\n\\| 'default'",
+        "default": "none",
+        "description": "The configration parameters for sonar-like pulsing circle animation shown around the 2D puck."
+      },
+      {
+        "name": "visible",
+        "required": false,
+        "type": "boolean",
+        "default": "none",
+        "description": "Whether location icon is visible, defaults to true"
+      }
+    ],
+    "fileNameWithExt": "LocationPuck.tsx",
+    "relPath": "src/components/LocationPuck.tsx",
+    "name": "LocationPuck"
   },
   "MapView": {
     "description": "MapView backed by Mapbox Native GL",
@@ -3554,15 +3759,6 @@
         "examples": [
           "\nawait this._map.setSourceVisibility(false, 'composite', 'building')\n\n"
         ]
-      },
-      {
-        "name": "showAttribution",
-        "docblock": "Show the attribution and telemetry action sheet.\nIf you implement a custom attribution button, you should add this action to the button.",
-        "modifiers": [],
-        "params": [],
-        "returns": null,
-        "description": "Show the attribution and telemetry action sheet.\nIf you implement a custom attribution button, you should add this action to the button.",
-        "examples": []
       }
     ],
     "props": [
@@ -3757,7 +3953,7 @@
         "required": false,
         "type": "\\| {\n    /** locale code like `es` or `current` for the device's current locale */\n    locale: string;\n    /** layer id to localize. If not specified, all layers will be localized */\n    layerIds?: string[];\n  }\n\\| true",
         "default": "none",
-        "description": "[`mapbox` (v10) implementation only]\nSet map's label locale, e.g. { \"locale\": \"es\" } will localize labels to Spanish, { \"locale\": \"current\" } will localize labels to system locale."
+        "description": "[`mapbox` (v10) implementation only]\nSet map's label locale, e.g. `{ \"locale\": \"es\" }` will localize labels to Spanish, `{ \"locale\": \"current\" }` will localize labels to system locale."
       },
       {
         "name": "gestureSettings",
@@ -3889,7 +4085,7 @@
           "funcSignature": "(feature:GeoJSON.Feature) => void"
         },
         "default": "none",
-        "description": "<v10 only\n\nThis event is triggered whenever the currently displayed map region is about to change.\n\n@param {PointFeature} feature - The geojson point feature at the camera center, properties contains zoomLevel, visibleBounds\n*signature:*`(feature:GeoJSON.Feature) => void`"
+        "description": "<v10 only\n\nThis event is triggered whenever the currently displayed map region is about to change.\n\n- `feature`: `PointFeature`  - The geojson point feature at the camera center, properties contains zoomLevel, visibleBounds\n*signature:*`(feature:GeoJSON.Feature) => void`"
       },
       {
         "name": "onRegionIsChanging",
@@ -3899,7 +4095,7 @@
           "funcSignature": "(feature:GeoJSON.Feature) => void"
         },
         "default": "none",
-        "description": "This event is triggered whenever the currently displayed map region is changing.\n\n@param {PointFeature} feature - The geojson point feature at the camera center, properties contains zoomLevel, visibleBounds\n*signature:*`(feature:GeoJSON.Feature) => void`"
+        "description": "This event is triggered whenever the currently displayed map region is changing.\n\n- `feature`: `PointFeature`  - The geojson point feature at the camera center, properties contains zoomLevel, visibleBounds\n*signature:*`(feature:GeoJSON.Feature) => void`"
       },
       {
         "name": "onRegionDidChange",
@@ -3909,7 +4105,7 @@
           "funcSignature": "(feature:GeoJSON.Feature) => void"
         },
         "default": "none",
-        "description": "This event is triggered whenever the currently displayed map region finished changing.\n\n@param {PointFeature} feature - The geojson point feature at the camera center, properties contains zoomLevel, visibleBounds\n*signature:*`(feature:GeoJSON.Feature) => void`"
+        "description": "This event is triggered whenever the currently displayed map region finished changing.\n\n- `feature`: `PointFeature`  - The geojson point feature at the camera center, properties contains zoomLevel, visibleBounds\n*signature:*`(feature:GeoJSON.Feature) => void`"
       },
       {
         "name": "onCameraChanged",
@@ -3959,7 +4155,7 @@
           "funcSignature": "() => void"
         },
         "default": "none",
-        "description": "This event is triggered when the map has failed to load a new map style. On v10 it's deprecated and replaced by onMapLoadingError\n@deprecated use onMapLoadingError\n*signature:*`() => void`"
+        "description": "This event is triggered when the map has failed to load a new map style. On v10 it's deprecated and replaced by onMapLoadingError\n**DEPRECATED** use onMapLoadingError\n*signature:*`() => void`"
       },
       {
         "name": "onMapLoadingError",
@@ -4064,6 +4260,13 @@
         "type": "number",
         "default": "500",
         "description": "The emitted frequency of regiondidchange events"
+      },
+      {
+        "name": "deselectAnnotationOnTap",
+        "required": false,
+        "type": "boolean",
+        "default": "none",
+        "description": "Set to true to deselect any selected annotation when the map is tapped. If set to true you will not receive\nthe onPress event for the taps that deselect the annotation. Default is false."
       }
     ],
     "fileNameWithExt": "MapView.tsx",
@@ -4115,6 +4318,13 @@
         "description": "@v10\n\nWhether or not nearby markers on the map should all be displayed. If false, adjacent\nmarkers will 'collapse' and only one will be shown. Defaults to false."
       },
       {
+        "name": "allowOverlapWithPuck",
+        "required": false,
+        "type": "boolean",
+        "default": "false",
+        "description": "Whether or not nearby markers on the map should be hidden if close to a\nUserLocation puck. Defaults to false."
+      },
+      {
         "name": "isSelected",
         "required": false,
         "type": "boolean",
@@ -4133,29 +4343,133 @@
     "relPath": "src/components/MarkerView.tsx",
     "name": "MarkerView"
   },
-  "NativeUserLocation": {
-    "description": "",
-    "displayName": "NativeUserLocation",
+  "ModelLayer": {
+    "description": "ModelLayer is a style layer that renders one or more stroked polylines on the map.",
+    "displayName": "ModelLayer",
     "methods": [],
     "props": [
       {
-        "name": "androidRenderMode",
-        "required": false,
-        "type": "'normal' \\| 'compass' \\| 'gps'",
+        "name": "id",
+        "required": true,
+        "type": "string",
         "default": "none",
-        "description": "Android render mode.\n\n - normal: just a circle\n - compass: triangle with heading\n - gps: large arrow\n\n@platform android"
+        "description": "A string that uniquely identifies the source in the style to which it is added."
       },
       {
-        "name": "iosShowsUserHeadingIndicator",
+        "name": "existing",
         "required": false,
         "type": "boolean",
         "default": "none",
-        "description": "iOS only. A Boolean value indicating whether the user location annotation may display a permanent heading indicator.\n\n@platform ios"
+        "description": "The id refers to en existing layer in the style. Does not create a new layer."
+      },
+      {
+        "name": "sourceID",
+        "required": false,
+        "type": "string",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
+        "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined.\nInferred from parent source only if the layer is a direct child to it."
+      },
+      {
+        "name": "sourceLayerID",
+        "required": false,
+        "type": "string",
+        "default": "none",
+        "description": "Identifier of the layer within the source identified by the sourceID property from which the receiver obtains the data to style."
+      },
+      {
+        "name": "aboveLayerID",
+        "required": false,
+        "type": "string",
+        "default": "none",
+        "description": "Inserts a layer above aboveLayerID."
+      },
+      {
+        "name": "belowLayerID",
+        "required": false,
+        "type": "string",
+        "default": "none",
+        "description": "Inserts a layer below belowLayerID"
+      },
+      {
+        "name": "layerIndex",
+        "required": false,
+        "type": "number",
+        "default": "none",
+        "description": "Inserts a layer at a specified index"
+      },
+      {
+        "name": "filter",
+        "required": false,
+        "type": "FilterExpression",
+        "default": "none",
+        "description": "Filter only the features in the source layer that satisfy a condition that you define"
+      },
+      {
+        "name": "minZoomLevel",
+        "required": false,
+        "type": "number",
+        "default": "none",
+        "description": "The minimum zoom level at which the layer gets parsed and appears."
+      },
+      {
+        "name": "maxZoomLevel",
+        "required": false,
+        "type": "number",
+        "default": "none",
+        "description": "The maximum zoom level at which the layer gets parsed and appears."
+      },
+      {
+        "name": "slot",
+        "required": false,
+        "type": "'bottom' \\| 'middle' \\| 'top'",
+        "default": "none",
+        "description": "The slot this layer is assigned to. If specified, and a slot with that name exists, it will be placed at that position in the layer order.\n\nv11 only"
+      },
+      {
+        "name": "style",
+        "required": false,
+        "type": "ModelLayerStyleProps",
+        "default": "none",
+        "description": "Customizable style attributes"
       }
     ],
-    "fileNameWithExt": "NativeUserLocation.tsx",
-    "relPath": "src/components/NativeUserLocation.tsx",
-    "name": "NativeUserLocation"
+    "fileNameWithExt": "ModelLayer.tsx",
+    "relPath": "src/components/ModelLayer.tsx",
+    "name": "ModelLayer",
+    "mbx": {
+      "name": "model"
+    },
+    "styles": []
+  },
+  "Models": {
+    "description": "Name of 3D model assets to be used in the map",
+    "displayName": "Models",
+    "methods": [],
+    "props": [
+      {
+        "name": "models",
+        "required": true,
+        "type": {
+          "name": "shape",
+          "value": [
+            {
+              "name": {
+                "name": "string"
+              },
+              "required": true,
+              "type": "union",
+              "default": "none",
+              "description": "FIX ME NO DESCRIPTION"
+            }
+          ]
+        },
+        "default": "none",
+        "description": "pair odf model name to gltf and gbl file path/url, or asset id."
+      }
+    ],
+    "fileNameWithExt": "Models.tsx",
+    "relPath": "src/components/Models.tsx",
+    "name": "Models"
   },
   "PointAnnotation": {
     "description": "PointAnnotation represents a one-dimensional shape located at a single geographical coordinate.\n\nConsider using ShapeSource and SymbolLayer instead, if you have many points and static images,\nthey'll offer much better performance.\n\nIf you need interactive views please use MarkerView because PointAnnotation will render children onto a bitmap.\nAlso disable any kind of animations like `fadeDuration` of `Image`.\nOtherwise, the bitmap might be rendered at an unknown state of the animation.",
@@ -4384,7 +4698,7 @@
         "required": true,
         "type": "string",
         "default": "none",
-        "description": "A string that uniquely identifies the layer in the style to which it is added."
+        "description": "A string that uniquely identifies the source in the style to which it is added."
       },
       {
         "name": "existing",
@@ -4397,7 +4711,7 @@
         "name": "sourceID",
         "required": false,
         "type": "string",
-        "default": "MapboxGL.StyleSource.DefaultSourceID",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
         "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined.\nInferred from parent source only if the layer is a direct child to it."
       },
       {
@@ -4450,6 +4764,13 @@
         "description": "The maximum zoom level at which the layer gets parsed and appears."
       },
       {
+        "name": "slot",
+        "required": false,
+        "type": "'bottom' \\| 'middle' \\| 'top'",
+        "default": "none",
+        "description": "The slot this layer is assigned to. If specified, and a slot with that name exists, it will be placed at that position in the layer order.\n\nv11 only"
+      },
+      {
         "name": "style",
         "required": true,
         "type": "RasterLayerStyleProps",
@@ -4482,6 +4803,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-raster-visibility",
           "name": "visibility",
@@ -4980,7 +5304,7 @@
           "funcSignature": "(event:OnPressEvent) => void"
         },
         "default": "none",
-        "description": "Source press listener, gets called when a user presses one of the children layers only\nif that layer has a higher z-index than another source layers\n\n@param {Object} event\n@param {Object[]} event.features - the geojson features that have hit by the press (might be multiple)\n@param {Object} event.coordinates - the coordinates of the click\n@param {Object} event.point - the point of the click\n@return void\n*signature:*`(event:OnPressEvent) => void`"
+        "description": "Source press listener, gets called when a user presses one of the children layers only\nif that layer has a higher z-index than another source layers\n\n- `event`: `Object` \n- `event.features`: `Object[]`  - the geojson features that have hit by the press (might be multiple)\n- `event.coordinates`: `Object`  - the coordinates of the click\n- `event.point`: `Object`  - the point of the click\n@return void\n*signature:*`(event:OnPressEvent) => void`"
       },
       {
         "name": "hitbox",
@@ -5042,7 +5366,7 @@
         "name": "sourceID",
         "required": false,
         "type": "string",
-        "default": "MapboxGL.StyleSource.DefaultSourceID",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
         "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined."
       },
       {
@@ -5106,6 +5430,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-sky-visibility",
           "name": "visibility",
@@ -5410,7 +5737,7 @@
         "required": true,
         "type": "string",
         "default": "none",
-        "description": "A string that uniquely identifies the layer in the style to which it is added."
+        "description": "A string that uniquely identifies the source in the style to which it is added."
       },
       {
         "name": "existing",
@@ -5423,7 +5750,7 @@
         "name": "sourceID",
         "required": false,
         "type": "string",
-        "default": "MapboxGL.StyleSource.DefaultSourceID",
+        "default": "Mapbox.StyleSource.DefaultSourceID",
         "description": "The source from which to obtain the data to style.\nIf the source has not yet been added to the current style, the behavior is undefined.\nInferred from parent source only if the layer is a direct child to it."
       },
       {
@@ -5457,7 +5784,7 @@
       {
         "name": "filter",
         "required": false,
-        "type": "Expression",
+        "type": "FilterExpression",
         "default": "none",
         "description": "Filter only the features in the source layer that satisfy a condition that you define"
       },
@@ -5476,11 +5803,18 @@
         "description": "The maximum zoom level at which the layer gets parsed and appears."
       },
       {
-        "name": "style",
+        "name": "slot",
         "required": false,
+        "type": "'bottom' \\| 'middle' \\| 'top'",
+        "default": "none",
+        "description": "The slot this layer is assigned to. If specified, and a slot with that name exists, it will be placed at that position in the layer order.\n\nv11 only"
+      },
+      {
+        "name": "style",
+        "required": true,
         "type": "SymbolLayerStyleProps",
         "default": "none",
-        "description": "FIX ME NO DESCRIPTION"
+        "description": "Customizable style attributes"
       },
       {
         "name": "children",
@@ -5579,7 +5913,7 @@
         "name": "symbolSortKey",
         "type": "number",
         "values": [],
-        "description": "Sorts features in ascending order based on this value. Features with lower sort keys are drawn and placed first.  When `iconAllowOverlap` or `textAllowOverlap` is `false`, features with a lower sort key will have priority during placement. When `iconAllowOverlap` or `textAllowOverlap` is set to `true`, features with a higher sort key will overlap over features with a lower sort key.",
+        "description": "Sorts features in ascending order based on this value. Features with lower sort keys are drawn and placed first. When `iconAllowOverlap` or `textAllowOverlap` is `false`, features with a lower sort key will have priority during placement. When `iconAllowOverlap` or `textAllowOverlap` is set to `true`, features with a higher sort key will overlap over features with a lower sort key.",
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
@@ -5794,7 +6128,8 @@
         "expression": {
           "interpolated": false,
           "parameters": [
-            "zoom"
+            "zoom",
+            "feature"
           ]
         },
         "mbx": {
@@ -5824,7 +6159,8 @@
         "expression": {
           "interpolated": true,
           "parameters": [
-            "zoom"
+            "zoom",
+            "feature"
           ]
         },
         "mbx": {
@@ -6709,6 +7045,9 @@
         "requires": [],
         "disabledBy": [],
         "allowedFunctionTypes": [],
+        "expression": {
+          "interpolated": false
+        },
         "mbx": {
           "fullName": "layout-symbol-visibility",
           "name": "visibility",
@@ -6733,7 +7072,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -6759,7 +7099,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -6785,7 +7126,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -6813,7 +7155,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -6841,7 +7184,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -6930,7 +7274,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -6956,7 +7301,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -6982,7 +7328,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -7010,7 +7357,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -7038,7 +7386,8 @@
           "parameters": [
             "zoom",
             "feature",
-            "feature-state"
+            "feature-state",
+            "measure-light"
           ]
         },
         "transition": true,
@@ -7287,7 +7636,7 @@
         "required": false,
         "type": "UserLocationRenderMode",
         "default": "UserLocationRenderMode.Normal",
-        "description": "Which render mode to use."
+        "description": "@deprecated use NativeUserLocation component instead of UserLocationRenderMode.Native\nWhich render mode to use."
       },
       {
         "name": "requestsAlwaysUse",
@@ -7400,7 +7749,7 @@
           "funcSignature": "(event:OnPressEvent) => void"
         },
         "default": "none",
-        "description": "Source press listener, gets called when a user presses one of the children layers only\nif that layer has a higher z-index than another source layers\n\n@param {Object} event\n@param {Object[]} event.features - the geojson features that have hit by the press (might be multiple)\n@param {Object} event.coordinates - the coordinates of the click\n@param {Object} event.point - the point of the click\n*signature:*`(event:OnPressEvent) => void`"
+        "description": "Source press listener, gets called when a user presses one of the children layers only\nif that layer has a higher z-index than another source layers\n\n- `event`: `Object` \n- `event.features`: `Object[]`  - the geojson features that have hit by the press (might be multiple)\n- `event.coordinates`: `Object`  - the coordinates of the click\n- `event.point`: `Object`  - the point of the click\n*signature:*`(event:OnPressEvent) => void`"
       },
       {
         "name": "hitbox",
@@ -7438,6 +7787,72 @@
     "fileNameWithExt": "VectorSource.tsx",
     "relPath": "src/components/VectorSource.tsx",
     "name": "VectorSource"
+  },
+  "Viewport": {
+    "description": "provides a structured approach to organizing camera management logic into states and transitions between them.\n\nAt any given time, the viewport is either:\n - idle\n - in a state (camera is being managed by a ViewportState)\n - transitioning between states\n\nSee [android](https://docs.mapbox.com/android/maps/api/${ANDROID_SDK_VERSION}/mapbox-maps-android/com.mapbox.maps.plugin.viewport/viewport.html),\n[ios](https://docs.mapbox.com/ios/maps/api/${IOS_SDK_VERSION}/Viewport.html#/s:10MapboxMaps8ViewportC)",
+    "displayName": "Viewport",
+    "methods": [
+      {
+        "name": "getState",
+        "docblock": null,
+        "modifiers": [],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "idle",
+        "docblock": null,
+        "modifiers": [
+          "async"
+        ],
+        "params": [],
+        "returns": null
+      },
+      {
+        "name": "transitionTo",
+        "docblock": null,
+        "modifiers": [],
+        "params": [
+          {
+            "name": "state",
+            "optional": false,
+            "type": {
+              "name": null
+            }
+          },
+          {
+            "name": "transition",
+            "optional": false,
+            "type": {
+              "name": null
+            }
+          }
+        ],
+        "returns": null
+      }
+    ],
+    "props": [
+      {
+        "name": "transitionsToIdleUponUserInteraction",
+        "required": false,
+        "type": "boolean",
+        "default": "none",
+        "description": "Indicates whether the Viewport should idle when the MapView receives touch input.\n\nSet this property to false to enable building custom ViewportStates that can work simultaneously with certain types of gestures.\n\nDefaults to true."
+      },
+      {
+        "name": "onStatusChanged",
+        "required": false,
+        "type": {
+          "name": "func",
+          "funcSignature": "(event:{from: union, to: union, reason: union}) => void"
+        },
+        "default": "none",
+        "description": "Subscribes to status changes, will be called when the status changes.\n\nObservers are notified of status changes asynchronously on the main queue.\nThis means that by the time the notification is delivered, the status may have already changed again.\nThis behavior is necessary to allow observers to trigger further transitions while avoiding out-of-order\ndelivery of status changed notifications.\n*signature:*`(event:{from: union, to: union, reason: union}) => void`"
+      }
+    ],
+    "fileNameWithExt": "Viewport.tsx",
+    "relPath": "src/components/Viewport.tsx",
+    "name": "Viewport"
   },
   "coordinates": {
     "name": "coordinates",
@@ -7832,6 +8247,150 @@
       }
     ]
   },
+  "offlineManagerLegacy": {
+    "name": "offlineManagerLegacy",
+    "fileNameWithExt": "offlineManagerLegacy.ts",
+    "relPath": "src/modules/offline/offlineManagerLegacy.ts",
+    "description": "OfflineManagerLegacy implements a singleton (shared object) that manages offline packs.\nAll of this class’s instance methods are asynchronous, reflecting the fact that offline resources are stored in a database.\nThe shared object maintains a canonical collection of offline packs.",
+    "props": [],
+    "styles": [],
+    "methods": [
+      {
+        "name": "createPack",
+        "description": "Creates and registers an offline pack that downloads the resources needed to use the given region offline.",
+        "params": [
+          {
+            "name": "options",
+            "description": "Create options for a offline pack that specifices zoom levels, style url, and the region to download.",
+            "type": {
+              "name": "OfflineCreatePackOptions"
+            },
+            "optional": false
+          }
+        ],
+        "examples": [
+          "await Mapbox.offlineManager.createPack({\n  name: 'offlinePack',\n  styleURL: 'mapbox://...',\n  minZoom: 14,\n  maxZoom: 20,\n  bounds: [[neLng, neLat], [swLng, swLat]]\n})"
+        ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "void"
+          }
+        }
+      },
+      {
+        "name": "invalidatePack",
+        "description": "Invalidates the specified offline pack. This method checks that the tiles in the specified offline pack match those from the server. Local tiles that do not match the latest version on the server are updated.This is more efficient than deleting the offline pack and downloading it again. If the data stored locally matches that on the server, new data will not be downloaded.",
+        "params": [
+          {
+            "name": "name",
+            "description": "Name of the offline pack.",
+            "type": {
+              "name": "String"
+            },
+            "optional": false
+          }
+        ],
+        "examples": [
+          "await Mapbox.offlineManagerLegacy.invalidatePack('packName')"
+        ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "void"
+          }
+        }
+      },
+      {
+        "name": "deletePack",
+        "description": "Unregisters the given offline pack and allows resources that are no longer required by any remaining packs to be potentially freed.",
+        "params": [
+          {
+            "name": "name",
+            "description": "Name of the offline pack.",
+            "type": {
+              "name": "String"
+            },
+            "optional": false
+          }
+        ],
+        "examples": [
+          "await Mapbox.offlineManagerLegacy.deletePack('packName')"
+        ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "void"
+          }
+        }
+      },
+      {
+        "name": "migrateOfflineCache",
+        "description": "Migrates the offline cache from pre-v10 SDKs to the new v10 cache location",
+        "params": [],
+        "examples": [
+          "await Mapbox.offlineManager.migrateOfflineCache()"
+        ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "void"
+          }
+        }
+      },
+      {
+        "name": "resetDatabase",
+        "description": "Deletes the existing database, which includes both the ambient cache and offline packs, then reinitializes it.",
+        "params": [],
+        "examples": [
+          "await Mapbox.offlineManager.resetDatabase();"
+        ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "void"
+          }
+        }
+      },
+      {
+        "name": "getPacks",
+        "description": "Retrieves all the current offline packs that are stored in the database.",
+        "params": [],
+        "examples": [
+          "const offlinePacks = await Mapbox.offlineManagerLegacy.getPacks();"
+        ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "Array"
+          }
+        }
+      },
+      {
+        "name": "getPack",
+        "description": "Retrieves an offline pack that is stored in the database by name.",
+        "params": [
+          {
+            "name": "name",
+            "description": "Name of the offline pack.",
+            "type": {
+              "name": "String"
+            },
+            "optional": false
+          }
+        ],
+        "examples": [
+          "const offlinePack = await Mapbox.offlineManagerLegacy.getPack();"
+        ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "OfflinePack"
+          }
+        }
+      }
+    ]
+  },
   "snapshotManager": {
     "name": "snapshotManager",
     "fileNameWithExt": "snapshotManager.ts",
@@ -7856,6 +8415,53 @@
         "examples": [
           "// creates a temp file png of base map\nconst uri = await MapboxGL.snapshotManager.takeSnap({\n  centerCoordinate: [-74.126410, 40.797968],\n  width: width,\n  height: height,\n  zoomLevel: 12,\n  pitch: 30,\n  heading: 20,\n  styleURL: MapboxGL.StyleURL.Dark,\n  writeToDisk: true, // Create a temporary file\n});\n\n// creates base64 png of base map without logo\nconst uri = await MapboxGL.snapshotManager.takeSnap({\n  centerCoordinate: [-74.126410, 40.797968],\n  width: width,\n  height: height,\n  zoomLevel: 12,\n  pitch: 30,\n  heading: 20,\n  styleURL: MapboxGL.StyleURL.Dark,\n  withLogo: false, // Disable Mapbox logo (Android only)\n});\n\n// creates snapshot with bounds\nconst uri = await MapboxGL.snapshotManager.takeSnap({\n  bounds: [[-74.126410, 40.797968], [-74.143727, 40.772177]],\n  width: width,\n  height: height,\n  styleURL: MapboxGL.StyleURL.Dark,\n});"
         ],
+        "returns": {
+          "description": "",
+          "type": {
+            "name": "Promise"
+          }
+        }
+      }
+    ]
+  },
+  "tileStore": {
+    "name": "tileStore",
+    "fileNameWithExt": "TileStore.ts",
+    "relPath": "src/modules/offline/TileStore.ts",
+    "description": "TileStore manages downloads and storage for requests to tile-related API endpoints,\nenforcing a disk usage quota: tiles available on disk may be deleted to make room for a new download.\nThis interface can be used by an app developer to set the disk quota.",
+    "props": [],
+    "styles": [],
+    "methods": [
+      {
+        "name": "setOption",
+        "description": "Sets additional options for this instance that are specific to a data type.\nParams:\nkey – The configuration option that should be changed. Valid keys are listed in \\c TileStoreOptions. domain – The data type this setting should be applied for. value – The value for the configuration option, or null if it should be reset.",
+        "params": [
+          {
+            "name": "key",
+            "description": "",
+            "type": {
+              "name": "string"
+            },
+            "optional": false
+          },
+          {
+            "name": "domain",
+            "description": "",
+            "type": {
+              "name": "TileDataDomain"
+            },
+            "optional": false
+          },
+          {
+            "name": "value",
+            "description": "",
+            "type": {
+              "name": "TileDataValue"
+            },
+            "optional": false
+          }
+        ],
+        "examples": [],
         "returns": {
           "description": "",
           "type": {

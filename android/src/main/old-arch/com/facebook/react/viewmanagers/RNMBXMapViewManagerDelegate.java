@@ -67,6 +67,9 @@ public class RNMBXMapViewManagerDelegate<T extends View, U extends BaseViewManag
       case "pitchEnabled":
         mViewManager.setPitchEnabled(view, new DynamicFromObject(value));
         break;
+      case "deselectAnnotationOnTap":
+        mViewManager.setDeselectAnnotationOnTap(view, new DynamicFromObject(value));
+        break;
       case "requestDisallowInterceptTouchEvent":
         mViewManager.setRequestDisallowInterceptTouchEvent(view, new DynamicFromObject(value));
         break;
@@ -96,6 +99,9 @@ public class RNMBXMapViewManagerDelegate<T extends View, U extends BaseViewManag
         break;
       case "compassImage":
         mViewManager.setCompassImage(view, new DynamicFromObject(value));
+        break;
+      case "mapViewImpl":
+        mViewManager.setMapViewImpl(view, new DynamicFromObject(value));
         break;
       default:
         super.setProperty(view, propName, value);

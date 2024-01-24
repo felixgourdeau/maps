@@ -40,6 +40,7 @@ NativeModules.RNMBXModule = {
   EventTypes: keyMirror([
     'MapClick',
     'MapLongClick',
+    'MapIdle',
     'RegionWillChange',
     'RegionIsChanging',
     'RegionDidChange',
@@ -98,6 +99,7 @@ NativeModules.RNMBXModule = {
   getAccessToken: () => Promise.resolve('test-token'),
   setTelemetryEnabled: jest.fn(),
   setConnected: jest.fn(),
+  clearData: jest.fn(),
 
   MapboxV10: true,
 };
@@ -119,6 +121,21 @@ NativeModules.RNMBXOfflineModule = nativeModule({
   setTileCountLimit: jest.fn(),
   setProgressEventThrottle: jest.fn(),
 });
+
+NativeModules.RNMBXOfflineModuleLegacy = {
+  createPack: (packOptions) => {
+    return Promise.resolve({
+      bounds: packOptions.bounds,
+      metadata: JSON.stringify({ name: packOptions.name }),
+    });
+  },
+  getPacks: () => Promise.resolve([]),
+  deletePack: () => Promise.resolve(),
+  getPackStatus: () => Promise.resolve({}),
+  migrateOfflineCache: () => Promise.resolve({}),
+  pausePackDownload: () => Promise.resolve(),
+  resumePackDownload: () => Promise.resolve(),
+};
 
 NativeModules.RNMBXSnapshotModule = {
   takeSnap: () => {
@@ -164,7 +181,25 @@ NativeModules.RNMBXPointAnnotationModule = {
   refresh: jest.fn(),
 };
 
-NativeModules.RNMBXLogging = nativeModule({});
+NativeModules.RNMBXViewportModule = {
+  idle: jest.fn(),
+  transitionTo: jest.fn(),
+  getState: jest.fn(),
+};
+
+NativeModules.RNMBXTileStoreModule = {
+  setOptions: jest.fn(),
+  shared: jest.fn(),
+};
+
+NativeModules.RNMBXMovePointShapeAnimatorModule = {
+  create: jest.fn(),
+  start: jest.fn(),
+};
+
+NativeModules.RNMBXLogging = nativeModule({
+  setLogLevel: jest.fn(),
+});
 
 // Mock for global AbortController
 global.AbortController = class {
