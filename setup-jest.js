@@ -2,8 +2,6 @@
 delete global.MessageChannel;
 import { NativeModules } from 'react-native';
 
-jest.useFakeTimers('legacy');
-
 function keyMirror(keys) {
   const obj = {};
   keys.forEach((key) => (obj[key] = key));
@@ -187,12 +185,21 @@ NativeModules.RNMBXViewportModule = {
   getState: jest.fn(),
 };
 
+NativeModules.RNMBXCameraModule = {
+  updateCameraStop: jest.fn(),
+};
+
 NativeModules.RNMBXTileStoreModule = {
   setOptions: jest.fn(),
   shared: jest.fn(),
 };
 
 NativeModules.RNMBXMovePointShapeAnimatorModule = {
+  create: jest.fn(),
+  start: jest.fn(),
+};
+
+NativeModules.RNMBXChangeLineOffsetsShapeAnimatorModule = {
   create: jest.fn(),
   start: jest.fn(),
 };
