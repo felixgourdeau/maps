@@ -8,13 +8,14 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.rnmapbox.rnmbx.NativeMapViewModuleSpec
 import com.rnmapbox.rnmbx.utils.ConvertUtils
 import com.rnmapbox.rnmbx.utils.ExpressionParser
+import com.rnmapbox.rnmbx.utils.ViewRefTag
 import com.rnmapbox.rnmbx.utils.ViewTagResolver
 import com.rnmapbox.rnmbx.utils.extensions.toCoordinate
 import com.rnmapbox.rnmbx.utils.extensions.toScreenCoordinate
 
 class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver: ViewTagResolver) : NativeMapViewModuleSpec(context) {
     private fun withMapViewOnUIThread(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         reject: Promise,
         fn: (RNMBXMapView) -> Unit
     ) {
@@ -38,14 +39,14 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
         }
     }
 
-    override fun takeSnap(viewRef: Double?, writeToDisk: Boolean, promise: Promise) {
+    override fun takeSnap(viewRef: ViewRefTag?, writeToDisk: Boolean, promise: Promise) {
         withMapViewOnUIThread(viewRef, promise) {
             it.takeSnap(writeToDisk, createCommandResponse(promise))
         }
     }
 
     override fun queryTerrainElevation(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         coordinates: ReadableArray,
         promise: Promise
     ) {
@@ -65,7 +66,7 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
     }
 
     override fun setSourceVisibility(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         visible: Boolean,
         sourceId: String,
         sourceLayerId: String?,
@@ -78,14 +79,14 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
         }
     }
 
-    override fun getCenter(viewRef: Double?, promise: Promise) {
+    override fun getCenter(viewRef: ViewRefTag?, promise: Promise) {
         withMapViewOnUIThread(viewRef, promise) {
             it.getCenter(createCommandResponse(promise))
         }
     }
 
     override fun getCoordinateFromView(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         atPoint: ReadableArray,
         promise: Promise
     ) {
@@ -94,26 +95,26 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
         }
     }
 
-    override fun getPointInView(viewRef: Double?, atCoordinate: ReadableArray, promise: Promise) {
+    override fun getPointInView(viewRef: ViewRefTag?, atCoordinate: ReadableArray, promise: Promise) {
         withMapViewOnUIThread(viewRef, promise) {
             it.getPointInView(atCoordinate.toCoordinate(), createCommandResponse(promise))
         }
     }
 
-    override fun getZoom(viewRef: Double?, promise: Promise) {
+    override fun getZoom(viewRef: ViewRefTag?, promise: Promise) {
         withMapViewOnUIThread(viewRef, promise) {
             it.getZoom(createCommandResponse(promise))
         }
     }
 
-    override fun getVisibleBounds(viewRef: Double?, promise: Promise) {
+    override fun getVisibleBounds(viewRef: ViewRefTag?, promise: Promise) {
         withMapViewOnUIThread(viewRef, promise) {
             it.getVisibleBounds(createCommandResponse(promise))
         }
     }
 
     override fun queryRenderedFeaturesAtPoint(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         atPoint: ReadableArray,
         withFilter: ReadableArray,
         withLayerIDs: ReadableArray,
@@ -132,7 +133,7 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
     }
 
     override fun queryRenderedFeaturesInRect(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         withBBox: ReadableArray,
         withFilter: ReadableArray,
         withLayerIDs: ReadableArray?,
@@ -151,7 +152,7 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
     }
 
     override fun setHandledMapChangedEvents(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         events: ReadableArray,
         promise: Promise
     ) {
@@ -161,14 +162,14 @@ class NativeMapViewModule(context: ReactApplicationContext, val viewTagResolver:
         }
     }
 
-    override fun clearData(viewRef: Double?, promise: Promise) {
+    override fun clearData(viewRef: ViewRefTag?, promise: Promise) {
         withMapViewOnUIThread(viewRef, promise) {
             it.clearData(createCommandResponse(promise))
         }
     }
 
     override fun querySourceFeatures(
-        viewRef: Double?,
+        viewRef: ViewRefTag?,
         sourceId: String,
         withFilter: ReadableArray,
         withSourceLayerIDs: ReadableArray,
