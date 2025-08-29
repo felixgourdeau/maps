@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { isValidElement, type ReactNode } from 'react';
 import { View, NativeModules } from 'react-native';
 
 import {
@@ -114,6 +114,7 @@ export class SymbolLayer extends AbstractLayer<Props, NativeTypeProps> {
     }
 
     React.Children.forEach(this.baseProps.children, (child) => {
+      if (!isValidElement(child)) return;
       if (child?.type === View) {
         isSnapshot = true;
       }
