@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React, { ReactNode } from 'react';
 import { View, NativeModules } from 'react-native';
 
 import {
@@ -89,7 +89,7 @@ export type Props = LayerPropsCommon & {
    * @deprecated passed children used to create an image with id of symbol in style and also set the iconImageName property accordingly.
    * This is now deprecated, use Image component instead.
    */
-  children?: JSX.Element | JSX.Element[];
+  children?: ReactNode;
 };
 
 type NativeTypeProps = Omit<Props, 'style'> & {

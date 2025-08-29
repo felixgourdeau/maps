@@ -1,4 +1,4 @@
-import React, { type JSX } from 'react';
+import React, { type ReactNode } from 'react';
 import mapboxgl from 'mapbox-gl';
 
 import MapContext from '../MapContext';
@@ -7,7 +7,7 @@ import MapContext from '../MapContext';
  * MapView backed by Mapbox GL KS
  */
 class MapView extends React.Component<
-  { styleURL: string; children: JSX.Element },
+  { styleURL: string; children: ReactNode },
   { map?: object | null }
 > {
   state = { map: null };
