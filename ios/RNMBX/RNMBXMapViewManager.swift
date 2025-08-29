@@ -10,7 +10,7 @@ extension QueriedSourceFeature {
 open class RNMBXMapViewManager: RCTViewManager {
     @objc
     override public static func requiresMainQueueSetup() -> Bool {
-        return true
+        return false
     }
   
     func defaultFrame() -> CGRect {
@@ -131,8 +131,11 @@ extension RNMBXMapViewManager {
 
     @objc public static func getVisibleBounds(
         _ view: RNMBXMapView,
-        resolver: @escaping RCTPromiseResolveBlock) {
-            resolver(["visibleBounds":  view.mapboxMap.coordinateBounds(for: view.bounds).toArray()])
+        resolver: @escaping RCTPromiseResolveBlock,
+        rejecter: @escaping RCTPromiseRejectBlock) {
+          view.withMapboxMap { map in
+            resolver(["visibleBounds": map.coordinateBounds(for: view.bounds).toArray()])
+          }
     }
 
 }
