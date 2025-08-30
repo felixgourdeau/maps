@@ -13,6 +13,7 @@
 package com.rnmapbox.rnmbx;
 
 import com.facebook.proguard.annotations.DoNotStrip;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -25,6 +26,9 @@ import javax.annotation.Nonnull;
 public abstract class NativeRNMBXLocationModuleSpec extends ReactContextBaseJavaModule implements ReactModuleWithSpec, TurboModule {
   public static final String NAME = "RNMBXLocationModule";
 
+  // Added missing event emitter callback
+  private Callback mEventEmitterCallback;
+
   public NativeRNMBXLocationModuleSpec(ReactApplicationContext reactContext) {
     super(reactContext);
   }
@@ -34,8 +38,11 @@ public abstract class NativeRNMBXLocationModuleSpec extends ReactContextBaseJava
     return NAME;
   }
 
+// Updated method with null check
   protected final void emitOnLocationUpdate(ReadableMap value) {
-    mEventEmitterCallback.invoke("onLocationUpdate", value);
+    if (mEventEmitterCallback != null) {
+      mEventEmitterCallback.invoke("onLocationUpdate", value);
+    }
   }
 
   @ReactMethod

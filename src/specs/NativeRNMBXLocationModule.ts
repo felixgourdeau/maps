@@ -1,5 +1,4 @@
 import { TurboModule, TurboModuleRegistry} from "react-native";
-import type { EventEmitter } from 'react-native/Libraries/Types/CodegenTypes';
 
 type LocationEvent = {
   type: string //"userlocationdupdated"
@@ -25,7 +24,7 @@ export interface Spec extends TurboModule {
   simulateHeading(changesPerSecond: number, increment: number): void
   setLocationEventThrottle(throttle: number): void
 
-  readonly onLocationUpdate: EventEmitter<LocationEvent>
+  onLocationUpdate(callback: (event: LocationEvent) => void): void
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('RNMBXLocationModule');
